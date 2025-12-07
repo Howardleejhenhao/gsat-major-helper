@@ -1,7 +1,7 @@
 import pandas as pd
 
 input_path = "../csv/Department_category_chinese_v1.csv"
-output_path = "../csv/Department.csv"
+output_path = "../csv/Category.csv"
 
 
 df = pd.read_csv(input_path)
