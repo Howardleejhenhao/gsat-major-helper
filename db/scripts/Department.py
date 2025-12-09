@@ -1,117 +1,139 @@
 import re
+import csv
 import time
-import pandas as pd
+import random
+import os
 import requests
 from bs4 import BeautifulSoup
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
-from tqdm import tqdm
+from urllib.parse import urljoin
+from tqdm import tqdm  # ✅ 加這行
 
-MAIN_URL = "https://www.cac.edu.tw/apply114/system/ColQry_114applyXForStu_Fd87eO2q/gsd_search_php.php?part=part_1"
-BASE = "https://www.cac.edu.tw/apply114/system/ColQry_114applyXForStu_Fd87eO2q/"
-POST_URL = BASE + "ShowGsd.php"
+# 115 入口（需要按按鈕的那頁）
+start_url = "https://www.cac.edu.tw/apply115/system/ColQry_115xappLyfOrStu_Azd5gP29/school_search.htm"
+post_url = urljoin(start_url, "ShowSchool.php")
 
-CODE_RE = re.compile(r"\((\d{6})\)")
+session = requests.Session()
+session.headers.update({
+    "User-Agent": (
+        "Mozilla/5.0 (X11; Linux x86_64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/120.0 Safari/537.36"
+    ),
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "zh-TW,zh;q=0.9,en;q=0.8",
+    "Connection": "keep-alive",
+    "Referer": start_url,
+    "Origin": "https://www.cac.edu.tw",
+})
 
-def build_session():
-    s = requests.Session()
+retries = Retry(
+    total=5,
+    backoff_factor=0.6,
+    status_forcelist=[429, 500, 502, 503, 504],
+    allowed_methods=["GET", "POST"]
+)
+adapter = HTTPAdapter(max_retries=retries)
+session.mount("https://", adapter)
+session.mount("http://", adapter)
 
-    retry = Retry(
-        total=5,
-        connect=5,
-        read=5,
-        backoff_factor=0.6,
-        status_forcelist=[429, 500, 502, 503, 504],
-        allowed_methods={"GET", "POST"},
-        raise_on_status=False,
-    )
-    adapter = HTTPAdapter(max_retries=retry)
-    s.mount("https://", adapter)
-    s.mount("http://", adapter)
+# ===== Step 1: 抓 115 學校清單（依學校名稱查詢）=====
+payload = {
+    "option": "SCHNAME",
+    "SubSchName": "依學校名稱查詢",
+}
+resp = session.post(post_url, data=payload, timeout=20)
+resp.encoding = resp.apparent_encoding
+soup = BeautifulSoup(resp.text, "html.parser")
 
-    s.headers.update({
-        "User-Agent": (
-            "Mozilla/5.0 (X11; Linux x86_64) "
-            "AppleWebKit/537.36 (KHTML, like Gecko) "
-            "Chrome/122.0.0.0 Safari/537.36"
-        ),
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        "Accept-Language": "zh-TW,zh;q=0.9,en;q=0.5",
-        "Referer": MAIN_URL,
-        "Origin": "https://www.cac.edu.tw",
-        "Connection": "keep-alive",
-    })
+univ_pattern = re.compile(r"^\((\d{3})\)(.+)$")
 
-    return s
+universities = []
+for a in soup.find_all("a"):
+    text = a.get_text(strip=True)
+    m = univ_pattern.match(text)
+    if not m:
+        continue
 
-def parse_result_html(html: str):
-    soup = BeautifulSoup(html, "html.parser")
-    rows = []
+    univ_id = m.group(1)
+    univ_name = m.group(2).strip()
+    href = a.get("href", "").strip()
+    if not href:
+        continue
 
-    tds = soup.find_all("td", attrs={"title": re.compile("校系名稱及代碼")})
-    for td in tds:
-        raw_text = td.get_text("\n", strip=True)
-        m = CODE_RE.search(raw_text)
-        if not m:
+    univ_url = urljoin(post_url, href)
+    universities.append((univ_id, univ_name, univ_url))
+
+# 去重
+tmp = {}
+for uid, uname, uurl in universities:
+    tmp[uid] = (uid, uname, uurl)
+universities = [tmp[k] for k in sorted(tmp.keys())]
+
+print(f"universities: {len(universities)}")
+
+# ===== Step 2: 逐校抓科系 =====
+dept_code_pat = re.compile(r"\((\d{6})\)")
+
+rows = []
+
+# ✅ tqdm 包住 universities
+for univ_id, univ_name, univ_url in tqdm(
+    universities,
+    desc="Fetching departments",
+    unit="univ"
+):
+    time.sleep(random.uniform(0.2, 0.6))
+
+    r = session.get(univ_url, timeout=20)
+    r.encoding = r.apparent_encoding
+    s = BeautifulSoup(r.text, "html.parser")
+
+    table = s.find("table")
+    if not table:
+        continue
+
+    trs = table.find_all("tr")
+    if not trs:
+        continue
+
+    for tr in trs[1:]:
+        tds = tr.find_all("td")
+        if not tds:
             continue
 
+        first_td = tds[0]
+        cell_text = first_td.get_text(separator="\n", strip=True)
+
+        m = dept_code_pat.search(cell_text)
+        if not m:
+            continue
         dept_id = m.group(1)
-        univ_id = dept_id[:3]
 
-        cleaned = CODE_RE.sub("", raw_text).strip()
-        parts = [p.strip() for p in cleaned.split("\n") if p.strip()]
-        department = parts[-1] if parts else ""
+        lines = [ln.strip() for ln in cell_text.split("\n") if ln.strip()]
+        clean = []
+        for ln in lines:
+            if dept_code_pat.search(ln):
+                continue
+            if univ_name in ln:
+                continue
+            clean.append(ln)
 
-        rows.append({
-            "dept_id": dept_id,
-            "univ_id": univ_id,
-            "department": department,
-        })
+        department = clean[0] if clean else cell_text.replace(univ_name, "").strip()
 
-    dedup = {}
-    for r in rows:
-        dedup[r["dept_id"]] = r
-    return list(dedup.values())
+        rows.append((dept_id, univ_id, department))
 
-def fetch_by_univ_id(s: requests.Session, univ_id: str):
-    s.get(MAIN_URL, timeout=20)
+rows = sorted(set(rows), key=lambda x: x[0])
 
-    data = {
-        "TxtGsdCode": univ_id,
-        "SubTxtGsdCode": "依校系代碼查詢",
-        "action": "SubTxtGsdCode",
-    }
+# ===== Step 3: 輸出 CSV =====
+out_dir = "../csv"
+os.makedirs(out_dir, exist_ok=True)  # ✅ 避免資料夾不存在
 
-    resp = s.post(POST_URL, data=data, timeout=30)
-    resp.raise_for_status()
-    return parse_result_html(resp.text)
+out_path = os.path.join(out_dir, "Department_ori_115.csv")
+with open(out_path, "w", newline="", encoding="utf-8-sig") as f:
+    w = csv.writer(f)
+    w.writerow(["dept_id", "univ_id", "department"])
+    w.writerows(rows)
 
-def main():
-    schools = pd.read_csv("../csv/University.csv", dtype={"univ_id": str})
-    schools["univ_id"] = schools["univ_id"].str.zfill(3)
-
-    s = build_session()
-    all_rows = []
-
-    univ_list = schools["univ_id"].tolist()
-
-    for univ_id in tqdm(univ_list, desc="Fetching departments", unit="univ"):
-        try:
-            rows = fetch_by_univ_id(s, univ_id)
-            rows = [r for r in rows if r["univ_id"] == univ_id]
-            all_rows.extend(rows)
-
-            time.sleep(0.4)
-
-        except requests.exceptions.RequestException as e:
-            tqdm.write(f"[WARN] {univ_id} failed: {e}")
-            time.sleep(1.0)
-
-    df = pd.DataFrame(all_rows).drop_duplicates(subset=["dept_id"])
-    df = df.sort_values(["univ_id", "dept_id"]).reset_index(drop=True)
-
-    df.to_csv("../csv/Department.csv", index=False, encoding="utf-8-sig")
-    print(f"departments_114.csv（{len(df)} rows）")
-
-if __name__ == "__main__":
-    main()
+print(f"departments: {len(rows)}, {out_path}")
