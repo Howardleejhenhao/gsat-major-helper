@@ -1,15 +1,25 @@
+import re
+import os
+import time
+import random
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
-import time
-import sys
+from tqdm import tqdm
+from urllib.parse import urljoin
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
-INPUT_CSV = "../csv/Department_ori.csv"
-OUTPUT_CSV = "../csv/ExamRequirement.csv"
+INPUT_CSV = "../csv/Department_ori_115.csv"
+OUTPUT_CSV = "../csv/ExamRequirement_115.csv"
 
-ID_COL = "dept_id"
-EXAM_YEAR = 114
+START_URL = "https://www.cac.edu.tw/apply115/system/ColQry_115xappLyfOrStu_Azd5gP29/SchoolSearch.php"
 
+EXAM_YEAR = 115
+
+REQUEST_TIMEOUT = 20
+SLEEP_SEC = 0.05
+ALWAYS_OUTPUT_6_SUBJECTS = True
 SUBJECT_NAME_TO_ID = {
     "國文": 0,
     "英文": 1,
@@ -20,8 +30,6 @@ SUBJECT_NAME_TO_ID = {
     "社會": 4,
     "自然": 5,
 }
-
-TARGET_SUBJECT_IDS = {0, 1, 2, 3, 4, 5}
 
 HEADERS_CANONICAL = {
     "國文": "國文",
@@ -34,124 +42,177 @@ HEADERS_CANONICAL = {
     "自然": "自然",
 }
 
-BASE = "https://university-tw.ldkrsi.men/caac"
-ALWAYS_OUTPUT_6_SUBJECTS = True
+CANONICAL_SUBJECT_ORDER = ["國文", "英文", "數A", "數B", "社會", "自然"]
 
-REQUEST_TIMEOUT = 15
-SLEEP_SEC = 0.2
-# ==========================
+def build_session():
+    s = requests.Session()
+    s.headers.update({
+        "User-Agent": (
+            "Mozilla/5.0 (X11; Linux x86_64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/120.0 Safari/537.36"
+        ),
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "zh-TW,zh;q=0.9,en;q=0.8",
+        "Connection": "keep-alive",
+        "Referer": START_URL,
+    })
 
+    retries = Retry(
+        total=5,
+        backoff_factor=0.6,
+        status_forcelist=[429, 500, 502, 503, 504],
+        allowed_methods=["GET", "POST"]
+    )
+    adapter = HTTPAdapter(max_retries=retries)
+    s.mount("https://", adapter)
+    s.mount("http://", adapter)
+    return s
 
 def normalize_dept_id(x: str) -> str:
-    """盡量把 dept_id 轉成網站可能用的 6 碼字串。
-    - 若已是 6 碼數字字串：直接用
-    - 若是 5 碼：左補 0
-    - 其他長度：原樣回傳
-    """
     if pd.isna(x):
         return ""
     s = str(x).strip()
-    # pandas 可能把 013062 讀成 13062 或 13062.0
     if s.endswith(".0"):
         s = s[:-2]
     if s.isdigit():
         if len(s) == 6:
             return s
-        if len(s) == 5:
-            return s.zfill(6)
-        if len(s) == 4:
+        if len(s) in (4, 5):
             return s.zfill(6)
     return s
 
+def fetch_university_list(session: requests.Session):
+    post_url = urljoin(START_URL, "ShowSchool.php")
 
-def build_url(dept_id: str) -> str:
-    school_id = dept_id[:3]
-    # print(f"{BASE}/{school_id}/{dept_id}")
-    return f"{BASE}/{school_id}/{dept_id}"
+    payload = {
+        "option": "SCHNAME",
+        "SubSchName": "依學校名稱查詢",
+    }
 
+    r = session.post(post_url, data=payload, timeout=REQUEST_TIMEOUT)
+    r.encoding = r.apparent_encoding
+    soup = BeautifulSoup(r.text, "html.parser")
 
-def find_exam_standard_table(soup: BeautifulSoup):
-    """從頁面中找出『學測檢定標準』對應的 table。"""
-    # 方式 1：依 dt/dd 結構精準找
-    for dt in soup.find_all("dt"):
-        if dt.get_text(strip=True) == "學測檢定標準":
-            dd = dt.find_next_sibling("dd")
-            if dd:
-                table = dd.find("table")
-                if table:
-                    return table
+    univ_pattern = re.compile(r"^\((\d{3})\)(.+)$")
 
-    # 方式 2：fallback - 找看起來像學測檢定標準的 standard 表
-    candidates = soup.find_all("table", class_="standard")
-    for t in candidates:
-        thead = t.find("thead")
-        if not thead:
+    universities = []
+    for a in soup.find_all("a"):
+        text = a.get_text(strip=True)
+        m = univ_pattern.match(text)
+        if not m:
             continue
-        header_text = " ".join(th.get_text(strip=True) for th in thead.find_all(["th", "td"]))
-        if "國文" in header_text and "英文" in header_text and "自然" in header_text:
-            # 通常這張就是
-            return t
 
-    return None
+        univ_id = m.group(1)
+        univ_name = m.group(2).strip()
+        href = (a.get("href") or "").strip()
+        if not href:
+            continue
 
+        univ_url = urljoin(post_url, href)
+        universities.append((univ_id, univ_name, univ_url))
 
-def parse_requirements_from_html(html: str, dept_id: str):
+    # 去重 & sort
+    tmp = {}
+    for uid, uname, uurl in universities:
+        tmp[uid] = (uid, uname, uurl)
+    universities = [tmp[k] for k in sorted(tmp.keys())]
+    return universities
+
+def extract_dept_detail_links(school_html: str, base_url: str):
+    soup = BeautifulSoup(school_html, "html.parser")
+
+    dept_code_pat = re.compile(r"\((\d{6})\)")
+    detail_href_pat = re.compile(r"115_\d{6}\.htm", re.IGNORECASE)
+
+    mapping = {}
+
+    for a in soup.find_all("a"):
+        a_text = a.get_text(strip=True)
+        href = (a.get("href") or "").strip()
+        if not href:
+            continue
+
+        if a_text == "詳細資料" or detail_href_pat.search(href):
+            abs_url = urljoin(base_url, href)
+
+            m = re.search(r"115_(\d{6})\.htm", href)
+            dept_id = m.group(1) if m else None
+
+            if not dept_id:
+                tr = a.find_parent("tr")
+                if tr:
+                    first_td = tr.find("td")
+                    if first_td:
+                        txt = first_td.get_text(" ", strip=True)
+                        m2 = dept_code_pat.search(txt)
+                        if m2:
+                            dept_id = m2.group(1)
+
+            if dept_id:
+                mapping[dept_id] = abs_url
+
+    return mapping
+
+def parse_first_stage_requirements(html: str):
     soup = BeautifulSoup(html, "html.parser")
-    table = find_exam_standard_table(soup)
-    if table is None:
-        return []
 
-    # 解析 header
-    thead_tr = table.find("thead").find("tr") if table.find("thead") else None
-    if not thead_tr:
-        return []
+    anchor = soup.find(string=re.compile(r"校系代碼"))
+    if not anchor:
+        return {}
 
-    header_cells = thead_tr.find_all(["th", "td"])
-    # 第一格通常是空白或年份欄
-    header_names = [c.get_text(strip=True) for c in header_cells[1:]]
+    tr = anchor.find_parent("tr")
+    if not tr:
+        return {}
 
-    # 正規化 header 名稱（數A/數B）
-    norm_headers = []
-    for h in header_names:
-        norm_headers.append(HEADERS_CANONICAL.get(h, h))
+    tds = tr.find_all("td")
+    if not tds:
+        return {}
 
-    # 找 114 年那一列
-    target_row = None
-    for tr in table.find("tbody").find_all("tr"):
-        th = tr.find("th")
-        if not th:
-            continue
-        year_text = th.get_text(strip=True)
-        if year_text == f"{EXAM_YEAR}年":
-            target_row = tr
-            break
+    subject_idx = None
+    subject_tokens_set = set(HEADERS_CANONICAL.keys())
 
-    if target_row is None:
-        return []
+    def split_lines(td):
+        txt = td.get_text("\n", strip=True)
+        return [x.strip() for x in txt.split("\n") if x.strip()]
 
-    tds = target_row.find_all("td")
-    values = [td.get_text(strip=True) for td in tds]
+    for i, td in enumerate(tds):
+        lines = split_lines(td)
+        hit = sum(1 for ln in lines if ln in subject_tokens_set)
+        if hit >= 2:
+            if "國文" in lines and "英文" in lines:
+                subject_idx = i
+                break
 
-    # 對齊 header - value
+    if subject_idx is None:
+        return {}
+
+    if subject_idx + 1 >= len(tds):
+        return {}
+
+    subject_lines = split_lines(tds[subject_idx])
+    level_lines = split_lines(tds[subject_idx + 1])
+
+    pairs = list(zip(subject_lines, level_lines))
+
     header_to_value = {}
-    for h, v in zip(norm_headers, values):
-        header_to_value[h] = v
+    for subj, lvl in pairs:
+        canon = HEADERS_CANONICAL.get(subj, subj)
+        if canon in SUBJECT_NAME_TO_ID:
+            if lvl in ("--", "－", "-", ""):
+                header_to_value[canon] = None
+            else:
+                header_to_value[canon] = lvl
 
+    return header_to_value
+
+
+def build_requirement_rows_for_dept(dept_id: str, header_to_value: dict):
     rows = []
+    for canon in CANONICAL_SUBJECT_ORDER:
+        sid = SUBJECT_NAME_TO_ID[canon]
 
-    # 依規格輸出 6 科
-    # 我們用 canonical header 反推 subject_id
-    canonical_subject_order = ["國文", "英文", "數A", "數B", "社會", "自然"]
-    for canon in canonical_subject_order:
-        sid = SUBJECT_NAME_TO_ID.get(canon)
-        if sid not in TARGET_SUBJECT_IDS:
-            continue
-
-        v = header_to_value.get(canon, "--")
-        if v in ("--", "－", "-", ""):
-            req = None
-        else:
-            req = v
+        req = header_to_value.get(canon, None)
 
         if ALWAYS_OUTPUT_6_SUBJECTS:
             rows.append({
@@ -168,58 +229,97 @@ def parse_requirements_from_html(html: str, dept_id: str):
                     "subject_id": sid,
                     "require_level": req
                 })
-
     return rows
 
 
-def fetch_and_parse(dept_id: str):
-    url = build_url(dept_id)
-    try:
-        r = requests.get(url, timeout=REQUEST_TIMEOUT)
-        if r.status_code != 200:
-            print(f"[WARN] HTTP {r.status_code}: {dept_id} -> {url}")
-            return []
-        return parse_requirements_from_html(r.text, dept_id)
-    except Exception as e:
-        print(f"[WARN] Fetch error: {dept_id} -> {e}")
-        return []
-
-
 def main():
-    df = pd.read_csv(INPUT_CSV)
+    os.makedirs(os.path.dirname(OUTPUT_CSV), exist_ok=True)
 
-    if ID_COL not in df.columns:
-        raise ValueError(f"找不到欄位 {ID_COL}，請確認總表欄位名稱。")
+    df = pd.read_csv(INPUT_CSV, dtype=str)
+    if "dept_id" not in df.columns:
+        raise ValueError("INPUT_CSV 找不到 dept_id 欄位")
 
-    raw_ids = df[ID_COL].dropna().unique().tolist()
-
-    dept_ids = []
-    for x in raw_ids:
+    target_dept_ids = []
+    for x in df["dept_id"].dropna().unique().tolist():
         did = normalize_dept_id(x)
-        if not did:
+        if did and did.isdigit() and len(did) == 6:
+            target_dept_ids.append(did)
+
+    target_dept_ids = sorted(set(target_dept_ids))
+    target_set = set(target_dept_ids)
+
+    session = build_session()
+    universities = fetch_university_list(session)
+    dept_to_detail = {}
+
+    for univ_id, univ_name, univ_url in tqdm(
+        universities,
+        desc="Scanning universities",
+        unit="univ"
+    ):
+        time.sleep(random.uniform(0.1, 0.4))
+        try:
+            r = session.get(univ_url, timeout=REQUEST_TIMEOUT)
+            r.encoding = r.apparent_encoding
+        except Exception as e:
+            tqdm.write(f"[WARN] school page fetch fail {univ_id} {univ_name}: {e}")
             continue
-        dept_ids.append(did)
-    # print(dept_ids)
+
+        m = extract_dept_detail_links(r.text, univ_url)
+
+        for did, durl in m.items():
+            if did in target_set:
+                dept_to_detail[did] = durl
+
+    if dept_to_detail:
+        sample_url = next(iter(dept_to_detail.values()))
+        base_html_dir = sample_url.rsplit("/", 1)[0] + "/"
+        for did in target_dept_ids:
+            if did not in dept_to_detail:
+                dept_to_detail[did] = urljoin(base_html_dir, f"115_{did}.htm?v=1.0")
+
     results = []
 
-    for i, did in enumerate(dept_ids, 1):
-        # 這個網站看起來用 6 碼校系代碼（例：013062）
-        # 若不是 6 碼數字字串，先跳過並警告
-        if not (did.isdigit() and len(did) == 6):
-            print(f"[SKIP] dept_id 格式可能不是網站校系代碼：{did}")
+    for i, did in enumerate(
+        tqdm(target_dept_ids, desc="Fetching detail pages", unit="dept"),
+        1
+    ):
+        detail_url = dept_to_detail.get(did)
+        if not detail_url:
+            tqdm.write(f"[WARN] no detail url for dept_id={did}")
             continue
 
-        rows = fetch_and_parse(did)
+        try:
+            r = session.get(detail_url, timeout=REQUEST_TIMEOUT)
+            if r.status_code != 200:
+                tqdm.write(f"[WARN] HTTP {r.status_code}: {did} -> {detail_url}")
+                continue
+            r.encoding = r.apparent_encoding
+        except Exception as e:
+            tqdm.write(f"[WARN] detail fetch error: {did} -> {e}")
+            continue
+
+        header_to_value = parse_first_stage_requirements(r.text)
+        rows = build_requirement_rows_for_dept(did, header_to_value)
         results.extend(rows)
 
         if i % 50 == 0:
-            print(f"[INFO] processed {i}/{len(dept_ids)}")
+            tqdm.write(f"[INFO] processed {i}/{len(target_dept_ids)}")
 
         time.sleep(SLEEP_SEC)
 
-    out_df = pd.DataFrame(results, columns=["dept_id", "exam_year", "subject_id", "require_level"])
-    out_df.to_csv(OUTPUT_CSV, index=False, encoding="utf-8-sig")
+    out_df = pd.DataFrame(results, columns=[
+        "dept_id", "exam_year", "subject_id", "require_level"
+    ])
 
+    # 穩定排序
+    if not out_df.empty:
+        out_df = out_df.sort_values(by=["dept_id", "subject_id"]).reset_index(drop=True)
+        out_df.insert(0, "req_id", range(len(out_df)))
+    else:
+        out_df = pd.DataFrame(columns=["req_id", "dept_id", "exam_year", "subject_id", "require_level"])
+
+    out_df.to_csv(OUTPUT_CSV, index=False, encoding="utf-8-sig")
     print(f"[DONE] rows={len(out_df)} -> {OUTPUT_CSV}")
 
 

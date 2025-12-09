@@ -1,0 +1,47 @@
+Scanning universities: 100%|██████████████████████████████████████████████| 64/64 [00:23<00:00,  2.69univ/s]
+[INFO] processed 50/2206
+[INFO] processed 100/2206
+[INFO] processed 150/2206
+[INFO] processed 200/2206
+[INFO] processed 250/2206
+[INFO] processed 300/2206
+[INFO] processed 350/2206
+[INFO] processed 400/2206
+[INFO] processed 450/2206
+[INFO] processed 500/2206
+[INFO] processed 550/2206
+[INFO] processed 600/2206
+[INFO] processed 650/2206
+[INFO] processed 700/2206
+[INFO] processed 750/2206
+[INFO] processed 800/2206
+[INFO] processed 850/2206
+[INFO] processed 900/2206
+[INFO] processed 950/2206
+[INFO] processed 1000/2206
+[INFO] processed 1050/2206
+[INFO] processed 1100/2206
+[INFO] processed 1150/2206
+[INFO] processed 1200/2206
+[INFO] processed 1250/2206
+[INFO] processed 1300/2206
+[INFO] processed 1350/2206
+[INFO] processed 1400/2206
+[INFO] processed 1450/2206
+[INFO] processed 1500/2206
+[INFO] processed 1550/2206
+[INFO] processed 1600/2206
+[INFO] processed 1650/2206
+[INFO] processed 1700/2206
+[INFO] processed 1750/2206
+[INFO] processed 1800/2206
+[INFO] processed 1850/2206
+[INFO] processed 1900/2206
+[INFO] processed 1950/2206
+[INFO] processed 2000/2206
+[INFO] processed 2050/2206
+[INFO] processed 2100/2206
+[INFO] processed 2150/2206
+[INFO] processed 2200/2206
+Fetching detail pages: 100%|██████████████████████████████████████████| 2206/2206 [05:09<00:00,  7.12dept/s]
+[DONE] rows=13236 -> ../csv/ExamRequirement_115.csv
