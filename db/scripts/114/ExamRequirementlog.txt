@@ -1,0 +1,206 @@
+[WARN] HTTP 404: 001082 -> https://university-tw.ldkrsi.men/caac/001/001082
+[INFO] processed 50/2168
+[WARN] HTTP 404: 001592 -> https://university-tw.ldkrsi.men/caac/001/001592
+[WARN] HTTP 404: 001742 -> https://university-tw.ldkrsi.men/caac/001/001742
+[WARN] HTTP 404: 001752 -> https://university-tw.ldkrsi.men/caac/001/001752
+[INFO] processed 100/2168
+[WARN] HTTP 404: 002342 -> https://university-tw.ldkrsi.men/caac/002/002342
+[WARN] HTTP 404: 002352 -> https://university-tw.ldkrsi.men/caac/002/002352
+[WARN] HTTP 404: 003082 -> https://university-tw.ldkrsi.men/caac/003/003082
+[INFO] processed 150/2168
+[WARN] HTTP 404: 003272 -> https://university-tw.ldkrsi.men/caac/003/003272
+[WARN] HTTP 404: 003282 -> https://university-tw.ldkrsi.men/caac/003/003282
+[INFO] processed 200/2168
+[WARN] HTTP 404: 004582 -> https://university-tw.ldkrsi.men/caac/004/004582
+[INFO] processed 250/2168
+[WARN] HTTP 404: 005232 -> https://university-tw.ldkrsi.men/caac/005/005232
+[INFO] processed 300/2168
+[WARN] HTTP 404: 006432 -> https://university-tw.ldkrsi.men/caac/006/006432
+[WARN] HTTP 404: 007162 -> https://university-tw.ldkrsi.men/caac/007/007162
+[INFO] processed 350/2168
+[WARN] HTTP 404: 009182 -> https://university-tw.ldkrsi.men/caac/009/009182
+[INFO] processed 400/2168
+[WARN] HTTP 404: 009432 -> https://university-tw.ldkrsi.men/caac/009/009432
+[WARN] HTTP 404: 009452 -> https://university-tw.ldkrsi.men/caac/009/009452
+[INFO] processed 450/2168
+[WARN] HTTP 404: 011382 -> https://university-tw.ldkrsi.men/caac/011/011382
+[WARN] HTTP 404: 011392 -> https://university-tw.ldkrsi.men/caac/011/011392
+[WARN] HTTP 404: 011552 -> https://university-tw.ldkrsi.men/caac/011/011552
+[INFO] processed 500/2168
+[WARN] HTTP 404: 013082 -> https://university-tw.ldkrsi.men/caac/013/013082
+[WARN] HTTP 404: 013092 -> https://university-tw.ldkrsi.men/caac/013/013092
+[INFO] processed 550/2168
+[INFO] processed 600/2168
+[WARN] HTTP 404: 014492 -> https://university-tw.ldkrsi.men/caac/014/014492
+[WARN] HTTP 404: 014502 -> https://university-tw.ldkrsi.men/caac/014/014502
+[WARN] HTTP 404: 014512 -> https://university-tw.ldkrsi.men/caac/014/014512
+[WARN] HTTP 404: 014522 -> https://university-tw.ldkrsi.men/caac/014/014522
+[WARN] HTTP 404: 015262 -> https://university-tw.ldkrsi.men/caac/015/015262
+[WARN] HTTP 404: 015272 -> https://university-tw.ldkrsi.men/caac/015/015272
+[INFO] processed 650/2168
+[WARN] HTTP 404: 016202 -> https://university-tw.ldkrsi.men/caac/016/016202
+[WARN] HTTP 404: 016252 -> https://university-tw.ldkrsi.men/caac/016/016252
+[WARN] HTTP 404: 016262 -> https://university-tw.ldkrsi.men/caac/016/016262
+[INFO] processed 700/2168
+[INFO] processed 750/2168
+[WARN] HTTP 404: 017542 -> https://university-tw.ldkrsi.men/caac/017/017542
+[WARN] HTTP 404: 017552 -> https://university-tw.ldkrsi.men/caac/017/017552
+[WARN] HTTP 404: 018232 -> https://university-tw.ldkrsi.men/caac/018/018232
+[WARN] HTTP 404: 018262 -> https://university-tw.ldkrsi.men/caac/018/018262
+[WARN] HTTP 404: 018302 -> https://university-tw.ldkrsi.men/caac/018/018302
+[INFO] processed 800/2168
+[WARN] HTTP 404: 020242 -> https://university-tw.ldkrsi.men/caac/020/020242
+[WARN] HTTP 404: 020292 -> https://university-tw.ldkrsi.men/caac/020/020292
+[WARN] HTTP 404: 020312 -> https://university-tw.ldkrsi.men/caac/020/020312
+[WARN] HTTP 404: 020342 -> https://university-tw.ldkrsi.men/caac/020/020342
+[INFO] processed 850/2168
+[WARN] HTTP 404: 020552 -> https://university-tw.ldkrsi.men/caac/020/020552
+[WARN] HTTP 404: 020672 -> https://university-tw.ldkrsi.men/caac/020/020672
+[WARN] HTTP 404: 021232 -> https://university-tw.ldkrsi.men/caac/021/021232
+[INFO] processed 900/2168
+[WARN] HTTP 404: 022192 -> https://university-tw.ldkrsi.men/caac/022/022192
+[WARN] HTTP 404: 022202 -> https://university-tw.ldkrsi.men/caac/022/022202
+[WARN] HTTP 404: 022212 -> https://university-tw.ldkrsi.men/caac/022/022212
+[WARN] HTTP 404: 022222 -> https://university-tw.ldkrsi.men/caac/022/022222
+[WARN] HTTP 404: 022232 -> https://university-tw.ldkrsi.men/caac/022/022232
+[WARN] HTTP 404: 022242 -> https://university-tw.ldkrsi.men/caac/022/022242
+[WARN] HTTP 404: 023172 -> https://university-tw.ldkrsi.men/caac/023/023172
+[WARN] HTTP 404: 023292 -> https://university-tw.ldkrsi.men/caac/023/023292
+[WARN] HTTP 404: 023312 -> https://university-tw.ldkrsi.men/caac/023/023312
+[WARN] HTTP 404: 023322 -> https://university-tw.ldkrsi.men/caac/023/023322
+[INFO] processed 950/2168
+[WARN] HTTP 404: 026252 -> https://university-tw.ldkrsi.men/caac/026/026252
+[WARN] HTTP 404: 027032 -> https://university-tw.ldkrsi.men/caac/027/027032
+[WARN] HTTP 404: 027142 -> https://university-tw.ldkrsi.men/caac/027/027142
+[INFO] processed 1000/2168
+[WARN] HTTP 404: 027442 -> https://university-tw.ldkrsi.men/caac/027/027442
+[WARN] HTTP 404: 027452 -> https://university-tw.ldkrsi.men/caac/027/027452
+[INFO] processed 1050/2168
+[WARN] HTTP 404: 031222 -> https://university-tw.ldkrsi.men/caac/031/031222
+[WARN] HTTP 404: 032242 -> https://university-tw.ldkrsi.men/caac/032/032242
+[INFO] processed 1100/2168
+[WARN] HTTP 404: 032322 -> https://university-tw.ldkrsi.men/caac/032/032322
+[WARN] HTTP 404: 033172 -> https://university-tw.ldkrsi.men/caac/033/033172
+[WARN] HTTP 404: 033222 -> https://university-tw.ldkrsi.men/caac/033/033222
+[WARN] HTTP 404: 033252 -> https://university-tw.ldkrsi.men/caac/033/033252
+[WARN] HTTP 404: 034082 -> https://university-tw.ldkrsi.men/caac/034/034082
+[INFO] processed 1150/2168
+[WARN] HTTP 404: 034512 -> https://university-tw.ldkrsi.men/caac/034/034512
+[WARN] HTTP 404: 034532 -> https://university-tw.ldkrsi.men/caac/034/034532
+[WARN] HTTP 404: 034542 -> https://university-tw.ldkrsi.men/caac/034/034542
+[INFO] processed 1200/2168
+[WARN] HTTP 404: 035172 -> https://university-tw.ldkrsi.men/caac/035/035172
+[WARN] HTTP 404: 035242 -> https://university-tw.ldkrsi.men/caac/035/035242
+[INFO] processed 1250/2168
+[WARN] HTTP 404: 038192 -> https://university-tw.ldkrsi.men/caac/038/038192
+[WARN] HTTP 404: 040182 -> https://university-tw.ldkrsi.men/caac/040/040182
+[WARN] HTTP 404: 040252 -> https://university-tw.ldkrsi.men/caac/040/040252
+[INFO] processed 1300/2168
+[WARN] HTTP 404: 040292 -> https://university-tw.ldkrsi.men/caac/040/040292
+[WARN] HTTP 404: 041272 -> https://university-tw.ldkrsi.men/caac/041/041272
+[WARN] HTTP 404: 042052 -> https://university-tw.ldkrsi.men/caac/042/042052
+[INFO] processed 1350/2168
+[WARN] HTTP 404: 042092 -> https://university-tw.ldkrsi.men/caac/042/042092
+[WARN] HTTP 404: 043012 -> https://university-tw.ldkrsi.men/caac/043/043012
+[WARN] HTTP 404: 043022 -> https://university-tw.ldkrsi.men/caac/043/043022
+[WARN] HTTP 404: 043032 -> https://university-tw.ldkrsi.men/caac/043/043032
+[WARN] HTTP 404: 043042 -> https://university-tw.ldkrsi.men/caac/043/043042
+[WARN] HTTP 404: 043052 -> https://university-tw.ldkrsi.men/caac/043/043052
+[WARN] HTTP 404: 043062 -> https://university-tw.ldkrsi.men/caac/043/043062
+[WARN] HTTP 404: 043072 -> https://university-tw.ldkrsi.men/caac/043/043072
+[WARN] HTTP 404: 043082 -> https://university-tw.ldkrsi.men/caac/043/043082
+[WARN] HTTP 404: 043092 -> https://university-tw.ldkrsi.men/caac/043/043092
+[WARN] HTTP 404: 043102 -> https://university-tw.ldkrsi.men/caac/043/043102
+[WARN] HTTP 404: 043112 -> https://university-tw.ldkrsi.men/caac/043/043112
+[WARN] HTTP 404: 043122 -> https://university-tw.ldkrsi.men/caac/043/043122
+[WARN] HTTP 404: 043132 -> https://university-tw.ldkrsi.men/caac/043/043132
+[WARN] HTTP 404: 043142 -> https://university-tw.ldkrsi.men/caac/043/043142
+[INFO] processed 1400/2168
+[WARN] HTTP 404: 043152 -> https://university-tw.ldkrsi.men/caac/043/043152
+[WARN] HTTP 404: 043162 -> https://university-tw.ldkrsi.men/caac/043/043162
+[WARN] HTTP 404: 043172 -> https://university-tw.ldkrsi.men/caac/043/043172
+[WARN] HTTP 404: 043182 -> https://university-tw.ldkrsi.men/caac/043/043182
+[WARN] HTTP 404: 043192 -> https://university-tw.ldkrsi.men/caac/043/043192
+[WARN] HTTP 404: 043202 -> https://university-tw.ldkrsi.men/caac/043/043202
+[WARN] HTTP 404: 043212 -> https://university-tw.ldkrsi.men/caac/043/043212
+[WARN] HTTP 404: 043222 -> https://university-tw.ldkrsi.men/caac/043/043222
+[WARN] HTTP 404: 043232 -> https://university-tw.ldkrsi.men/caac/043/043232
+[WARN] HTTP 404: 043242 -> https://university-tw.ldkrsi.men/caac/043/043242
+[WARN] HTTP 404: 043252 -> https://university-tw.ldkrsi.men/caac/043/043252
+[WARN] HTTP 404: 043262 -> https://university-tw.ldkrsi.men/caac/043/043262
+[WARN] HTTP 404: 043272 -> https://university-tw.ldkrsi.men/caac/043/043272
+[WARN] HTTP 404: 043282 -> https://university-tw.ldkrsi.men/caac/043/043282
+[WARN] HTTP 404: 044112 -> https://university-tw.ldkrsi.men/caac/044/044112
+[WARN] HTTP 404: 045052 -> https://university-tw.ldkrsi.men/caac/045/045052
+[INFO] processed 1450/2168
+[WARN] HTTP 404: 045362 -> https://university-tw.ldkrsi.men/caac/045/045362
+[WARN] HTTP 404: 045372 -> https://university-tw.ldkrsi.men/caac/045/045372
+[WARN] HTTP 404: 045382 -> https://university-tw.ldkrsi.men/caac/045/045382
+[INFO] processed 1500/2168
+[INFO] processed 1550/2168
+[WARN] HTTP 404: 050382 -> https://university-tw.ldkrsi.men/caac/050/050382
+[INFO] processed 1600/2168
+[WARN] HTTP 404: 050752 -> https://university-tw.ldkrsi.men/caac/050/050752
+[INFO] processed 1650/2168
+[WARN] HTTP 404: 051552 -> https://university-tw.ldkrsi.men/caac/051/051552
+[WARN] HTTP 404: 051572 -> https://university-tw.ldkrsi.men/caac/051/051572
+[WARN] HTTP 404: 051582 -> https://university-tw.ldkrsi.men/caac/051/051582
+[WARN] HTTP 404: 056042 -> https://university-tw.ldkrsi.men/caac/056/056042
+[WARN] HTTP 404: 056052 -> https://university-tw.ldkrsi.men/caac/056/056052
+[WARN] HTTP 404: 056062 -> https://university-tw.ldkrsi.men/caac/056/056062
+[WARN] HTTP 404: 056072 -> https://university-tw.ldkrsi.men/caac/056/056072
+[WARN] HTTP 404: 056082 -> https://university-tw.ldkrsi.men/caac/056/056082
+[WARN] HTTP 404: 056092 -> https://university-tw.ldkrsi.men/caac/056/056092
+[WARN] HTTP 404: 056102 -> https://university-tw.ldkrsi.men/caac/056/056102
+[WARN] HTTP 404: 056112 -> https://university-tw.ldkrsi.men/caac/056/056112
+[WARN] HTTP 404: 056122 -> https://university-tw.ldkrsi.men/caac/056/056122
+[WARN] HTTP 404: 056132 -> https://university-tw.ldkrsi.men/caac/056/056132
+[WARN] HTTP 404: 056142 -> https://university-tw.ldkrsi.men/caac/056/056142
+[INFO] processed 1700/2168
+[WARN] HTTP 404: 056152 -> https://university-tw.ldkrsi.men/caac/056/056152
+[WARN] HTTP 404: 056162 -> https://university-tw.ldkrsi.men/caac/056/056162
+[WARN] HTTP 404: 056172 -> https://university-tw.ldkrsi.men/caac/056/056172
+[WARN] HTTP 404: 056182 -> https://university-tw.ldkrsi.men/caac/056/056182
+[WARN] HTTP 404: 056192 -> https://university-tw.ldkrsi.men/caac/056/056192
+[WARN] HTTP 404: 056202 -> https://university-tw.ldkrsi.men/caac/056/056202
+[WARN] HTTP 404: 058102 -> https://university-tw.ldkrsi.men/caac/058/058102
+[WARN] HTTP 404: 058222 -> https://university-tw.ldkrsi.men/caac/058/058222
+[INFO] processed 1750/2168
+[WARN] HTTP 404: 063032 -> https://university-tw.ldkrsi.men/caac/063/063032
+[INFO] processed 1800/2168
+[WARN] HTTP 404: 079092 -> https://university-tw.ldkrsi.men/caac/079/079092
+[WARN] HTTP 404: 079262 -> https://university-tw.ldkrsi.men/caac/079/079262
+[WARN] HTTP 404: 079272 -> https://university-tw.ldkrsi.men/caac/079/079272
+[WARN] HTTP 404: 079282 -> https://university-tw.ldkrsi.men/caac/079/079282
+[INFO] processed 1850/2168
+[WARN] HTTP 404: 099372 -> https://university-tw.ldkrsi.men/caac/099/099372
+[INFO] processed 1900/2168
+[WARN] HTTP 404: 100332 -> https://university-tw.ldkrsi.men/caac/100/100332
+[WARN] HTTP 404: 101132 -> https://university-tw.ldkrsi.men/caac/101/101132
+[INFO] processed 1950/2168
+[WARN] HTTP 404: 109222 -> https://university-tw.ldkrsi.men/caac/109/109222
+[INFO] processed 2000/2168
+[WARN] HTTP 404: 110202 -> https://university-tw.ldkrsi.men/caac/110/110202
+[WARN] HTTP 404: 110212 -> https://university-tw.ldkrsi.men/caac/110/110212
+[WARN] HTTP 404: 110222 -> https://university-tw.ldkrsi.men/caac/110/110222
+[WARN] HTTP 404: 130232 -> https://university-tw.ldkrsi.men/caac/130/130232
+[WARN] HTTP 404: 130242 -> https://university-tw.ldkrsi.men/caac/130/130242
+[WARN] HTTP 404: 130252 -> https://university-tw.ldkrsi.men/caac/130/130252
+[INFO] processed 2050/2168
+[WARN] HTTP 404: 130262 -> https://university-tw.ldkrsi.men/caac/130/130262
+[WARN] HTTP 404: 130272 -> https://university-tw.ldkrsi.men/caac/130/130272
+[WARN] HTTP 404: 130282 -> https://university-tw.ldkrsi.men/caac/130/130282
+[WARN] HTTP 404: 130292 -> https://university-tw.ldkrsi.men/caac/130/130292
+[WARN] HTTP 404: 130302 -> https://university-tw.ldkrsi.men/caac/130/130302
+[WARN] HTTP 404: 134392 -> https://university-tw.ldkrsi.men/caac/134/134392
+[WARN] HTTP 404: 134402 -> https://university-tw.ldkrsi.men/caac/134/134402
+[INFO] processed 2100/2168
+[WARN] HTTP 404: 150152 -> https://university-tw.ldkrsi.men/caac/150/150152
+[WARN] HTTP 404: 150172 -> https://university-tw.ldkrsi.men/caac/150/150172
+[WARN] HTTP 404: 151182 -> https://university-tw.ldkrsi.men/caac/151/151182
+[INFO] processed 2150/2168
+[WARN] HTTP 404: 153062 -> https://university-tw.ldkrsi.men/caac/153/153062
+[WARN] HTTP 404: 153132 -> https://university-tw.ldkrsi.men/caac/153/153132
+[WARN] HTTP 404: 154012 -> https://university-tw.ldkrsi.men/caac/154/154012
+[WARN] HTTP 404: 154022 -> https://university-tw.ldkrsi.men/caac/154/154022
+[DONE] rows=11058 -> ../csv/dept_subject_require_114.csv
