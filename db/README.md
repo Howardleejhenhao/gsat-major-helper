@@ -2,7 +2,7 @@
 
 ## 建立 / 啟動
 ```bash
-docker compose up -d
+docker compose up -d --build
 ````
 
 ## 關閉 / 移除（清空資料）
@@ -15,6 +15,12 @@ docker compose down
 
 ```bash
 docker compose exec -it postgres psql -U app -d appdb
+```
+
+## 如何執行 `.sql` 檔案
+在建立 container 後，跑以下指令，在這個資料夾底下有 `SQLExample1.sql`、`SQLExample2.sql`，可以直接拿來測試。
+```bash
+docker compose exec -T postgres psql -U app -d appdb < <file_name>.sql
 ```
 
 ## 列出所有資料表

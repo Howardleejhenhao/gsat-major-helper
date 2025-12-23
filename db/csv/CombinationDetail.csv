@@ -1,4 +1,4 @@
-﻿combo_id,subject_id,require_score,remark
+﻿combo_id,subject_id,required_score,remark
 0,4,13,社=13
 1,1,12,英=12
 2,0,15,國=15

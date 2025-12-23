@@ -1,4 +1,4 @@
-﻿req_id,dept_id,exam_year,subject_id,require_level
+﻿req_id,dept_id,exam_year,subject_id,required_level
 0,001012,115,0,前標
 1,001012,115,1,均標
 2,001012,115,2,均標

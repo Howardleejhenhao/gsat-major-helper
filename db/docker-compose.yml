@@ -19,3 +19,18 @@ services:
       timeout: 3s
       retries: 10
     restart: "no"
+
+  csv_loader:
+    image: python:3.12-slim
+    depends_on:
+      postgres:
+        condition: service_healthy
+    working_dir: /work
+    volumes:
+      - ./:/work:ro
+    command: >
+      sh -lc "
+        pip install --no-cache-dir psycopg2-binary &&
+        python load_csvs.py --csv-dir ./csv --truncate --host postgres --port 5432
+      "
+    restart: "no"
