@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>DB Tables</title>
+  </head>
+  <body style="font-family: system-ui; padding: 24px;">
+    <h1>目前資料庫中的資料表</h1>
+    <p>連線：appdb（透過 host:5433）</p>
+
+    <ul>
+      {% for schema, name in tables %}
+        <li><code>{{ schema }}.{{ name }}</code></li>
+      {% empty %}
+        <li>沒有找到任何 table</li>
+      {% endfor %}
+    </ul>
+  </body>
+</html>
