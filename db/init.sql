@@ -5,7 +5,8 @@ create table University (
 
 create table Category (
 	category_id INT primary key,
-	category_name VARCHAR(100)
+	academic_cluster VARCHAR(100),
+    category_name VARCHAR(100)
 );
 
 create table Subject (
@@ -30,12 +31,12 @@ create table StandardLevel (
 
 create table SubjectPerformance (
 	perf_id INT primary key,
-	subject_id CHAR(20) references Subject(subject_id),
 	exam_year CHAR(20) references ExamYear(exam_year),
+	subject_id CHAR(20) references Subject(subject_id),
 	level INT,
 	percentile DECIMAL(5,2),
-	min_score_range DECIMAL(5,2), 
-	max_score_range DECIMAL(5,2)
+	min_score DECIMAL(5,2), 
+	max_score DECIMAL(5,2)
 );
 
 create table Department (

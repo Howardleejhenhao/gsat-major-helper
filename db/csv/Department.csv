@@ -1,4 +1,4 @@
-﻿dept_id,univ_id,department,category_id
+﻿dept_id,univ_id,dept_name,category_id
 001012,001,中國文學系,1304
 001022,001,外國語文學系,1201
 001032,001,歷史學系,1305
