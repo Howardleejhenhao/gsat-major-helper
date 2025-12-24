@@ -1,20 +1,104 @@
-<!doctype html>
-<html lang="zh-Hant">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>DB Tables</title>
-  </head>
-  <body style="font-family: system-ui; padding: 24px;">
-    <h1>目前資料庫中的資料表</h1>
-    <p>連線：appdb（透過 host:5433）</p>
+{% extends "base.html" %}
+{% block title %}首頁｜GSAT Helper{% endblock %}
 
-    <ul>
-      {% for schema, name in tables %}
-        <li><code>{{ schema }}.{{ name }}</code></li>
-      {% empty %}
-        <li>沒有找到任何 table</li>
-      {% endfor %}
-    </ul>
-  </body>
-</html>
+{% block content %}
+  <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+    <!-- Hero -->
+    <section class="pt-6 sm:pt-10">
+      <div class="rounded-3xl border border-white/10 bg-white/5 p-6 sm:p-10 shadow-[0_0_0_1px_rgba(255,255,255,0.03)] backdrop-blur">
+        <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <div class="max-w-2xl">
+            <!-- <div class="inline-flex items-center gap-2 rounded-full bg-white/5 px-3 py-1 text-xs text-slate-200 ring-1 ring-white/10">
+              <span class="inline-block h-2 w-2 rounded-full bg-emerald-400/90"></span>
+              資料查詢入口
+            </div> -->
+
+            <h1 class="mt-4 text-2xl font-semibold tracking-tight sm:text-4xl">
+              讓你用更少步驟，完成更精準的志願比較
+            </h1>
+            <p class="mt-3 text-sm leading-6 text-slate-300/90 sm:text-base">
+              在同一個地方查「歷年五標級分、級分轉換、同類科系比較、檢定標準」與「我的最愛」。
+              先從主頁進入各功能，之後我們會把每個查詢頁面逐步做完整。
+            </p>
+
+            <!-- Tags -->
+            <div class="mt-6 flex flex-wrap gap-2">
+              {% for tag in tags %}
+                <span class="inline-flex items-center gap-2 rounded-full bg-white/5 px-3 py-1 text-xs text-slate-200 ring-1 ring-white/10">
+                  <span class="h-1.5 w-1.5 rounded-full bg-white/60"></span>
+                  {{ tag }}
+                </span>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-3 sm:flex-row">
+            <!-- <a href="#features"
+               class="inline-flex items-center justify-center rounded-2xl bg-white px-5 py-3 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-100 active:translate-y-[1px]">
+              快速開始
+            </a>
+            <a href="/admin/"
+               class="inline-flex items-center justify-center rounded-2xl bg-white/5 px-5 py-3 text-sm font-semibold text-white ring-1 ring-white/15 transition hover:bg-white/10 active:translate-y-[1px]">
+              管理後台
+            </a> -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Feature Cards -->
+    <section id="features" class="mt-10">
+      <div class="mb-5 flex items-end justify-between">
+        <div>
+          <h2 class="text-lg font-semibold tracking-tight sm:text-xl">功能入口</h2>
+          <p class="mt-1 text-sm text-slate-300/80">點擊卡片右下角按鈕進入對應功能頁</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {% for f in features %}
+          <div class="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.03)] backdrop-blur transition hover:bg-white/7">
+            <!-- top glow -->
+            <div class="pointer-events-none absolute -top-16 -right-16 h-40 w-40 rounded-full bg-gradient-to-tr from-white/10 to-transparent blur-2xl opacity-0 transition group-hover:opacity-100"></div>
+
+            <div class="flex items-start gap-4">
+              <div class="grid h-11 w-11 place-items-center rounded-2xl bg-white/10 ring-1 ring-white/15">
+                <!-- icon -->
+                <svg class="h-5 w-5 text-white/90" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="{{ f.icon_path }}" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-2">
+                  <h3 class="truncate text-base font-semibold tracking-tight">{{ f.title }}</h3>
+                  {% if f.badge %}
+                    <span class="rounded-full bg-white/5 px-2 py-0.5 text-[11px] text-slate-200 ring-1 ring-white/10">{{ f.badge }}</span>
+                  {% endif %}
+                </div>
+                <p class="mt-1 text-sm leading-6 text-slate-300/85">
+                  {{ f.desc }}
+                </p>
+
+                <div class="mt-4 flex items-center justify-between">
+                  <span class="text-xs text-slate-400/80">
+                    {{ f.meta }}
+                  </span>
+
+                  <a href="{{ f.href }}"
+                     class="inline-flex items-center gap-2 rounded-2xl bg-white px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-100 active:translate-y-[1px]">
+                    前往
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M7 17L17 7M10 7h7v7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+    </section>
+  </div>
+{% endblock %}
