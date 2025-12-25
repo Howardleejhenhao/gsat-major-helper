@@ -80,5 +80,5 @@ create table ExamRequirement (
 
 create table Favorite (
     favorite_id INT primary key,
-    dept_id CHAR(20) references Department(dept_id),
+    dept_id CHAR(20) references Department(dept_id)
 );
