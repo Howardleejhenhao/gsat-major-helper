@@ -72,13 +72,49 @@ def score_conversion(request):
             if score < 0 or score > 15:
                 error = "級分請輸入 0～15 之間的整數"
             else:
-                results = [
-                    {"year": "111年", "level": "均標", "percent": "55.82", "range": "57.37＜X≦63.75"},
-                    {"year": "112年", "level": "頂標", "percent": "17.58", "range": "63.75＜X≦70.12"},
-                    {"year": "113年", "level": "前標", "percent": "31.26", "range": "57.43＜X≦63.81"},
-                    {"year": "114年", "level": "均標", "percent": "32.67", "range": "63.75＜X≦70.19"},
-                    {"year": "115年", "level": "均標", "percent": "32.67", "range": "63.75＜X≦70.19"},
-                ]
+                sql = """
+                    WITH input AS (
+                    SELECT
+                        %s::varchar AS sub_name,
+                        %s::int     AS lvl
+                    )
+                    SELECT
+                    sp.exam_year AS year,
+                    CASE
+                        WHEN input.lvl >= sl.top    THEN '頂標'
+                        WHEN input.lvl >= sl.high   THEN '前標'
+                        WHEN input.lvl >= sl.avg    THEN '均標'
+                        WHEN input.lvl >= sl.low    THEN '後標'
+                        WHEN input.lvl >= sl.bottom THEN '底標'
+                        ELSE '流標'
+                    END AS standard,
+                    sp.percentile AS percentile,
+                    sp.min_score_range AS range_low,
+                    sp.max_score_range AS range_high
+                    FROM input
+                    JOIN subject sub
+                    ON sub.subject_name = input.sub_name
+                    JOIN subjectperformance sp
+                    ON sp.subject_id = sub.subject_id
+                    AND sp.level = input.lvl
+                    JOIN standardlevel sl
+                    ON sl.exam_year = sp.exam_year
+                    AND sl.subject_id = sub.subject_id
+                    ORDER BY sp.exam_year;
+                    """
+                with connection.cursor() as cur:
+                    cur.execute(sql, [subject, score])
+                    rows = cur.fetchall()
+                results = []
+                for year, standard, percent, low, high, in rows:
+                    results.append({
+                        "year": f"{year}年",
+                        "level": standard,
+                        "percent": f"{percent:.2f}",
+                        "range": f"{low}＜X≦{high}",
+
+                    })
+
         except ValueError:
             error = "級分請輸入整數（例如 10）"
 
