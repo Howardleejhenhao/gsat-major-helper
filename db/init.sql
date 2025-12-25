@@ -78,7 +78,7 @@ create table ExamRequirement (
     required_level VARCHAR(10)
 );
 
-create table Favorite (
-    favorite_id INT primary key,
-    dept_id CHAR(20) references Department(dept_id)
+CREATE TABLE Favorite (
+    favorite_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    dept_id CHAR(20) REFERENCES Department(dept_id)
 );
