@@ -3,102 +3,109 @@
 
 {% block content %}
   <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+    <!-- Header (像你截圖：左上回首頁、標題與說明、右側可放按鈕) -->
     <section class="pt-6 sm:pt-10">
-      <div class="rounded-3xl border border-white/10 bg-white/5 p-6 sm:p-10 shadow-[0_0_0_1px_rgba(255,255,255,0.03)] backdrop-blur">
-        <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <div class="inline-flex items-center gap-2 rounded-full bg-white/5 px-3 py-1 text-xs text-slate-200 ring-1 ring-white/10">
-              <span class="inline-block h-2 w-2 rounded-full bg-emerald-400/90"></span>
-              查詢功能
-            </div>
-
-            <h1 class="mt-4 text-2xl font-semibold tracking-tight sm:text-4xl">
-              查詢特定科目歷年五標級分
-            </h1>
-            <p class="mt-3 text-sm leading-6 text-slate-300/90 sm:text-base">
-              選擇科目後，即可查看歷年「頂標 / 前標 / 均標 / 後標 / 底標」。
-            </p>
-          </div>
-
-          <a href="/" class="inline-flex items-center justify-center rounded-2xl bg-white/5 px-5 py-3 text-sm font-semibold text-white ring-1 ring-white/15 transition hover:bg-white/10 active:translate-y-[1px]">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <a href="/" class="inline-flex items-center gap-2 text-sm text-slate-300/90 hover:text-white transition">
+            <span aria-hidden="true">←</span>
             回首頁
           </a>
+
+          <h1 class="mt-3 text-2xl font-semibold tracking-tight sm:text-4xl">
+            查詢特定科目歷年五標級分
+          </h1>
+
+          <p class="mt-2 text-sm leading-6 text-slate-300/90 sm:text-base">
+            選擇科目後，即可查看歷年「頂標 / 前標 / 均標 / 後標 / 底標」。
+          </p>
         </div>
-        <div class="mt-8 flex flex-col gap-4 lg:flex-row lg:items-stretch">
-        <!-- Form (固定寬度 sidebar) -->
-        <form method="get"
-                class="rounded-3xl border border-white/10 bg-white/5 p-5 ring-1 ring-white/5 lg:w-80">
-            <label class="block text-sm font-semibold text-slate-100">科目</label>
 
-            <div class="mt-3">
-            <select name="subject"
-                    class="w-full rounded-2xl bg-slate-950/40 px-4 py-3 text-sm text-slate-100 ring-1 ring-white/10 outline-none transition focus:ring-white/25">
-                {% for s in subjects %}
-                <option value="{{ s }}" {% if s == subject %}selected{% endif %}>{{ s }}</option>
-                {% endfor %}
-            </select>
-            </div>
+      </div>
 
-            <button type="submit"
-                    class="mt-4 inline-flex w-full items-center justify-center rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-100 active:translate-y-[1px]">
-            查詢
-            </button>
-        </form>
-
-        <!-- Result (撐滿剩餘寬度) -->
-        <div class="flex-1 rounded-3xl border border-white/10 bg-white/5 p-5 ring-1 ring-white/5">
-            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-                <div class="text-sm text-slate-300/80">查詢結果</div>
-                <div class="mt-1 text-lg font-semibold tracking-tight">{{ subject }}</div>
-            </div>
-
-            <div class="self-start sm:self-auto rounded-full bg-white/5 px-3 py-1 text-xs text-slate-200 ring-1 ring-white/10">
-                年度：頂 / 前 / 均 / 後 / 底
-            </div>
-            </div>
-
-            <!-- 讓表格區域更大、可捲動（年份多時很好用） -->
-            <div class="mt-4 overflow-hidden rounded-2xl border border-white/10">
-            <div class="max-h-[560px] overflow-auto">
-                <table class="w-full table-fixed text-center divide-y divide-white/10">
-                <thead class="sticky top-0 bg-slate-950/60 backdrop-blur">
-                <tr>
-                    <th class="w-24 px-6 py-5 text-center text-xs font-semibold tracking-wide text-slate-200">年度</th>
-                    <th class="px-6 py-5 text-center text-xs font-semibold tracking-wide text-slate-200">頂標</th>
-                    <th class="px-6 py-5 text-center text-xs font-semibold tracking-wide text-slate-200">前標</th>
-                    <th class="px-6 py-5 text-center text-xs font-semibold tracking-wide text-slate-200">均標</th>
-                    <th class="px-6 py-5 text-center text-xs font-semibold tracking-wide text-slate-200">後標</th>
-                    <th class="px-6 py-5 text-center text-xs font-semibold tracking-wide text-slate-200">底標</th>
-                </tr>
-                </thead>
-
-
-                <tbody class="divide-y divide-white/10 bg-slate-950/20">
-                    {% for r in rows %}
-                    <tr class="hover:bg-white/5 transition">
-                        <td class="px-6 py-5 !text-center text-sm font-semibold text-slate-100">{{ r.year }}</td>
-                        <td class="px-6 py-5 !text-center text-sm text-slate-100">{{ r.top }}</td>
-                        <td class="px-6 py-5 !text-center text-sm text-slate-100">{{ r.front }}</td>
-                        <td class="px-6 py-5 !text-center text-sm text-slate-100">{{ r.avg }}</td>
-                        <td class="px-6 py-5 !text-center text-sm text-slate-100">{{ r.back }}</td>
-                        <td class="px-6 py-5 !text-center text-sm text-slate-100">{{ r.bottom }}</td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="6" class="px-6 py-10 text-center text-sm text-slate-300/80">
-                        查無資料
-                        </td>
-                    </tr>
+      <!-- Form Card：橫向輸入區（像你截圖那張長卡） -->
+      <div class="mt-6 rounded-3xl border border-white/10 bg-white/5 p-5 sm:p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.03)] backdrop-blur">
+        <form method="get">
+        <!-- 內容容器：限制表單寬度，避免 select/按鈕被拉爆 -->
+        <div class="mx-auto max-w-3xl">
+            <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+            <!-- 左側：科目 -->
+            <div class="w-full lg:max-w-md">
+                <label class="block text-sm font-semibold text-slate-100">科目</label>
+                <div class="mt-3">
+                <select name="subject"
+                        class="w-full rounded-2xl bg-slate-950/40 px-4 py-3 text-sm text-slate-100 ring-1 ring-white/10 outline-none transition focus:ring-white/25">
+                    {% for s in subjects %}
+                    <option value="{{ s }}" {% if s == subject %}selected{% endif %}>{{ s }}</option>
                     {% endfor %}
-                </tbody>
-                </table>
+                </select>
+                </div>
+            </div>
+
+            <!-- 右側：查詢按鈕（固定寬度，不要滿版） -->
+            <div class="lg:pb-0">
+                <button type="submit"
+                        class="inline-flex w-full lg:w-auto min-w-[96px] whitespace-nowrap items-center justify-center rounded-2xl bg-white px-6 py-3 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-100 active:translate-y-[1px]">
+                查詢
+                </button>
             </div>
             </div>
 
+            <!-- 提示文字：放下面，版面更乾淨 -->
+            <div class="mt-4 text-xs text-slate-300/70">
+            目前先用靜態資料展示，之後會改成 SQL 查詢輸出。
+            </div>
         </div>
+        </form>
+      </div>
+
+      <!-- Result Card：下面一整張大卡 -->
+      <div class="mt-6 rounded-3xl border border-white/10 bg-white/5 p-5 sm:p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.03)] backdrop-blur">
+        <div class="flex items-center justify-between gap-3">
+          <div class="min-w-0">
+            <div class="text-sm text-slate-300/80">查詢結果</div>
+            <div class="mt-1 truncate text-lg font-semibold tracking-tight">{{ subject }}</div>
+          </div>
+          <div class="rounded-full bg-white/5 px-3 py-1 text-xs text-slate-200 ring-1 ring-white/10">
+            年度：頂 / 前 / 均 / 後 / 底
+          </div>
         </div>
 
+        <div class="mt-4 overflow-hidden rounded-2xl border border-white/10">
+          <div class="max-h-[560px] overflow-auto">
+            <table class="w-full table-fixed text-center divide-y divide-white/10">
+              <thead class="sticky top-0 bg-slate-950/60 backdrop-blur">
+                <tr>
+                  <th class="w-24 px-6 py-5 !text-center text-xs font-semibold tracking-wide text-slate-200">年度</th>
+                  <th class="px-6 py-5 !text-center text-xs font-semibold tracking-wide text-slate-200">頂標</th>
+                  <th class="px-6 py-5 !text-center text-xs font-semibold tracking-wide text-slate-200">前標</th>
+                  <th class="px-6 py-5 !text-center text-xs font-semibold tracking-wide text-slate-200">均標</th>
+                  <th class="px-6 py-5 !text-center text-xs font-semibold tracking-wide text-slate-200">後標</th>
+                  <th class="px-6 py-5 !text-center text-xs font-semibold tracking-wide text-slate-200">底標</th>
+                </tr>
+              </thead>
+
+              <tbody class="divide-y divide-white/10 bg-slate-950/20">
+                {% for r in rows %}
+                  <tr class="hover:bg-white/5 transition">
+                    <td class="px-6 py-5 !text-center text-sm font-semibold text-slate-100 tabular-nums">{{ r.year }}</td>
+                    <td class="px-6 py-5 !text-center text-sm text-slate-100 tabular-nums">{{ r.top }}</td>
+                    <td class="px-6 py-5 !text-center text-sm text-slate-100 tabular-nums">{{ r.front }}</td>
+                    <td class="px-6 py-5 !text-center text-sm text-slate-100 tabular-nums">{{ r.avg }}</td>
+                    <td class="px-6 py-5 !text-center text-sm text-slate-100 tabular-nums">{{ r.back }}</td>
+                    <td class="px-6 py-5 !text-center text-sm text-slate-100 tabular-nums">{{ r.bottom }}</td>
+                  </tr>
+                {% empty %}
+                  <tr>
+                    <td colspan="6" class="px-6 py-10 text-center text-sm text-slate-300/80">
+                      查無資料
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </section>
   </div>
