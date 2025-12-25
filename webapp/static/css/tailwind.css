@@ -651,10 +651,6 @@ video {
   margin-top: 1.5rem;
 }
 
-.mt-8 {
-  margin-top: 2rem;
-}
-
 .block {
   display: block;
 }
@@ -767,12 +763,20 @@ video {
   min-width: 0px;
 }
 
+.min-w-\[96px\] {
+  min-width: 96px;
+}
+
 .min-w-full {
   min-width: 100%;
 }
 
 .max-w-2xl {
   max-width: 42rem;
+}
+
+.max-w-3xl {
+  max-width: 48rem;
 }
 
 .max-w-6xl {
@@ -858,10 +862,6 @@ video {
 
 .divide-white\/10 > :not([hidden]) ~ :not([hidden]) {
   border-color: rgb(255 255 255 / 0.1);
-}
-
-.self-start {
-  align-self: flex-start;
 }
 
 .overflow-auto {
@@ -1133,6 +1133,11 @@ video {
   font-weight: 600;
 }
 
+.tabular-nums {
+  --tw-numeric-spacing: tabular-nums;
+  font-variant-numeric: var(--tw-ordinal) var(--tw-slashed-zero) var(--tw-numeric-figure) var(--tw-numeric-spacing) var(--tw-numeric-fraction);
+}
+
 .leading-6 {
   line-height: 1.5rem;
 }
@@ -1250,10 +1255,6 @@ video {
   --tw-ring-color: rgb(255 255 255 / 0.15);
 }
 
-.ring-white\/5 {
-  --tw-ring-color: rgb(255 255 255 / 0.05);
-}
-
 .blur-2xl {
   --tw-blur: blur(40px);
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
@@ -1305,6 +1306,11 @@ video {
 .hover\:text-slate-100:hover {
   --tw-text-opacity: 1;
   color: rgb(241 245 249 / var(--tw-text-opacity, 1));
+}
+
+.hover\:text-white:hover {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity, 1));
 }
 
 .focus\:border-white\/20:focus {
@@ -1365,10 +1371,6 @@ video {
     justify-content: space-between;
   }
 
-  .sm\:self-auto {
-    align-self: auto;
-  }
-
   .sm\:p-10 {
     padding: 2.5rem;
   }
@@ -1413,8 +1415,12 @@ video {
 }
 
 @media (min-width: 1024px) {
-  .lg\:w-80 {
-    width: 20rem;
+  .lg\:w-auto {
+    width: auto;
+  }
+
+  .lg\:max-w-md {
+    max-width: 28rem;
   }
 
   .lg\:grid-cols-3 {
@@ -1429,10 +1435,6 @@ video {
     align-items: flex-end;
   }
 
-  .lg\:items-stretch {
-    align-items: stretch;
-  }
-
   .lg\:justify-between {
     justify-content: space-between;
   }
@@ -1440,5 +1442,9 @@ video {
   .lg\:px-8 {
     padding-left: 2rem;
     padding-right: 2rem;
+  }
+
+  .lg\:pb-0 {
+    padding-bottom: 0px;
   }
 }

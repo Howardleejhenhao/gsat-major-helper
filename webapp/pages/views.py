@@ -1,5 +1,5 @@
 from django.shortcuts import render
-
+from django.db import connection
 
 def home(request):
     tags = [
@@ -93,48 +93,45 @@ def score_conversion(request):
     return render(request, "pages/score_conversion.html", context)
 
 def standards_by_subject(request):
-    subjects = ["國文", "英文", "數A", "數B", "社會", "自然"]
+    subjects = ["國文", "英文", "數學A", "數學B", "社會", "自然"]
     subject = request.GET.get("subject") or "數A"
     if subject not in subjects:
         subject = "數A"
 
     sql_query = """
+        SELECT 
+            sl.exam_year,
+            sl.top,
+            sl.high,
+            sl.avg,
+            sl.low,
+            sl.bottom
+        FROM 
+            StandardLevel sl
+        JOIN 
+            Subject s ON sl.subject_id = s.subject_id
+        WHERE 
+            s.subject_name = %s
+        ORDER BY 
+            sl.exam_year DESC;
+
     """.strip()
 
-    mock_data = {
-        "數A": [
-            {"year": 114, "top": 14, "front": 12, "avg": 10, "back": 8, "bottom": 6},
-            {"year": 113, "top": 12, "front": 10, "avg": 7, "back": 5, "bottom": 3},
-            {"year": 112, "top": 10, "front": 8, "avg": 6, "back": 4, "bottom": 2},
-        ],
-        "國文": [
-            {"year": 114, "top": 14, "front": 12, "avg": 10, "back": 8, "bottom": 6},
-            {"year": 113, "top": 12, "front": 10, "avg": 7, "back": 5, "bottom": 3},
-            {"year": 112, "top": 10, "front": 8, "avg": 6, "back": 4, "bottom": 2},
-        ],
-        "英文": [
-            {"year": 114, "top": 14, "front": 12, "avg": 10, "back": 8, "bottom": 6},
-            {"year": 113, "top": 12, "front": 10, "avg": 7, "back": 5, "bottom": 3},
-            {"year": 112, "top": 10, "front": 8, "avg": 6, "back": 4, "bottom": 2},
-        ],
-        "數B": [
-            {"year": 114, "top": 14, "front": 12, "avg": 10, "back": 8, "bottom": 6},
-            {"year": 113, "top": 12, "front": 10, "avg": 7, "back": 5, "bottom": 3},
-            {"year": 112, "top": 10, "front": 8, "avg": 6, "back": 4, "bottom": 2},
-        ],
-        "社會": [
-            {"year": 114, "top": 14, "front": 12, "avg": 10, "back": 8, "bottom": 6},
-            {"year": 113, "top": 12, "front": 10, "avg": 7, "back": 5, "bottom": 3},
-            {"year": 112, "top": 10, "front": 8, "avg": 6, "back": 4, "bottom": 2},
-        ],
-        "自然": [
-            {"year": 114, "top": 14, "front": 12, "avg": 10, "back": 8, "bottom": 6},
-            {"year": 113, "top": 12, "front": 10, "avg": 7, "back": 5, "bottom": 3},
-            {"year": 112, "top": 10, "front": 8, "avg": 6, "back": 4, "bottom": 2},
-        ],
-    }
+    with connection.cursor() as cursor:
+        cursor.execute(sql_query, [subject])
+        rows_db = cursor.fetchall()
 
-    result_rows = mock_data.get(subject, [])
+    result_rows = [
+        {
+            "year": r[0],
+            "top": r[1],
+            "front": r[2],
+            "avg": r[3],
+            "back": r[4],
+            "bottom": r[5],
+        }
+        for r in rows_db
+    ]
 
     return render(
         request,
