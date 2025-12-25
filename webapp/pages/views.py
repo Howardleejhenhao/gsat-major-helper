@@ -56,3 +56,39 @@ def home(request):
     ]
 
     return render(request, "pages/home.html", {"tags": tags, "features": features})
+
+def score_conversion(request):
+    subjects = ["國文", "英文", "數A", "數B", "社會", "自然"]
+
+    subject = request.GET.get("subject", "國文")
+    score_raw = request.GET.get("score", "").strip()
+
+    score = None
+    error = None
+    results = None
+
+    if score_raw != "":
+        try:
+            score = int(score_raw)
+            if score < 0 or score > 15:
+                error = "級分請輸入 0～15 之間的整數"
+            else:
+                results = [
+                    {"year": "111年", "level": "均標", "percent": "55.82", "range": "57.37＜X≦63.75"},
+                    {"year": "112年", "level": "頂標", "percent": "17.58", "range": "63.75＜X≦70.12"},
+                    {"year": "113年", "level": "前標", "percent": "31.26", "range": "57.43＜X≦63.81"},
+                    {"year": "114年", "level": "均標", "percent": "32.67", "range": "63.75＜X≦70.19"},
+                    {"year": "115年", "level": "均標", "percent": "32.67", "range": "63.75＜X≦70.19"},
+                ]
+        except ValueError:
+            error = "級分請輸入整數（例如 10）"
+
+    context = {
+        "subjects": subjects,
+        "subject": subject,
+        "score_raw": score_raw,
+        "score": score,
+        "error": error,
+        "results": results,
+    }
+    return render(request, "pages/score_conversion.html", context)

@@ -16,10 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from pages.views import home
+from pages.views import home, score_conversion
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("", home, name="home"),
-
+    path("features/score-conversion/", score_conversion, name="score_conversion"),
 ]
