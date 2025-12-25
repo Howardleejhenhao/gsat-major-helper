@@ -77,3 +77,8 @@ create table ExamRequirement (
     subject_id CHAR(20) references Subject(subject_id),
     required_level VARCHAR(10)
 );
+
+create table Favorite (
+    favorite_id INT primary key,
+    dept_id CHAR(20) references Department(dept_id),
+);
