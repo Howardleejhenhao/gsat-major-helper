@@ -6,7 +6,6 @@ def home(request):
         "五標級分", "級分轉換", "同類科系比較", "檢定標準", "收藏",
     ]
 
-    # 這些 href 先當「未來功能頁」的路徑，你之後做功能時再把 URL 接起來即可
     features = [
         {
             "title": "查詢歷年五標級分",
@@ -92,3 +91,57 @@ def score_conversion(request):
         "results": results,
     }
     return render(request, "pages/score_conversion.html", context)
+
+def standards_by_subject(request):
+    subjects = ["國文", "英文", "數A", "數B", "社會", "自然"]
+    subject = request.GET.get("subject") or "數A"
+    if subject not in subjects:
+        subject = "數A"
+
+    sql_query = """
+    """.strip()
+
+    mock_data = {
+        "數A": [
+            {"year": 114, "top": 14, "front": 12, "avg": 10, "back": 8, "bottom": 6},
+            {"year": 113, "top": 12, "front": 10, "avg": 7, "back": 5, "bottom": 3},
+            {"year": 112, "top": 10, "front": 8, "avg": 6, "back": 4, "bottom": 2},
+        ],
+        "國文": [
+            {"year": 114, "top": 14, "front": 12, "avg": 10, "back": 8, "bottom": 6},
+            {"year": 113, "top": 12, "front": 10, "avg": 7, "back": 5, "bottom": 3},
+            {"year": 112, "top": 10, "front": 8, "avg": 6, "back": 4, "bottom": 2},
+        ],
+        "英文": [
+            {"year": 114, "top": 14, "front": 12, "avg": 10, "back": 8, "bottom": 6},
+            {"year": 113, "top": 12, "front": 10, "avg": 7, "back": 5, "bottom": 3},
+            {"year": 112, "top": 10, "front": 8, "avg": 6, "back": 4, "bottom": 2},
+        ],
+        "數B": [
+            {"year": 114, "top": 14, "front": 12, "avg": 10, "back": 8, "bottom": 6},
+            {"year": 113, "top": 12, "front": 10, "avg": 7, "back": 5, "bottom": 3},
+            {"year": 112, "top": 10, "front": 8, "avg": 6, "back": 4, "bottom": 2},
+        ],
+        "社會": [
+            {"year": 114, "top": 14, "front": 12, "avg": 10, "back": 8, "bottom": 6},
+            {"year": 113, "top": 12, "front": 10, "avg": 7, "back": 5, "bottom": 3},
+            {"year": 112, "top": 10, "front": 8, "avg": 6, "back": 4, "bottom": 2},
+        ],
+        "自然": [
+            {"year": 114, "top": 14, "front": 12, "avg": 10, "back": 8, "bottom": 6},
+            {"year": 113, "top": 12, "front": 10, "avg": 7, "back": 5, "bottom": 3},
+            {"year": 112, "top": 10, "front": 8, "avg": 6, "back": 4, "bottom": 2},
+        ],
+    }
+
+    result_rows = mock_data.get(subject, [])
+
+    return render(
+        request,
+        "pages/standards_by_subject.html",
+        {
+            "subjects": subjects,
+            "subject": subject,
+            "rows": result_rows,
+        },
+    )

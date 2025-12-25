@@ -574,6 +574,10 @@ video {
   position: relative;
 }
 
+.sticky {
+  position: sticky;
+}
+
 .inset-0 {
   inset: 0px;
 }
@@ -600,6 +604,10 @@ video {
 
 .right-\[-120px\] {
   right: -120px;
+}
+
+.top-0 {
+  top: 0px;
 }
 
 .z-10 {
@@ -641,6 +649,10 @@ video {
 
 .mt-6 {
   margin-top: 1.5rem;
+}
+
+.mt-8 {
+  margin-top: 2rem;
 }
 
 .block {
@@ -703,6 +715,10 @@ video {
   height: 520px;
 }
 
+.max-h-\[560px\] {
+  max-height: 560px;
+}
+
 .min-h-screen {
   min-height: 100vh;
 }
@@ -721,6 +737,10 @@ video {
 
 .w-2 {
   width: 0.5rem;
+}
+
+.w-24 {
+  width: 6rem;
 }
 
 .w-4 {
@@ -763,9 +783,19 @@ video {
   flex: 1 1 0%;
 }
 
+.table-fixed {
+  table-layout: fixed;
+}
+
 .-translate-x-1\/2 {
   --tw-translate-x: -50%;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+.select-none {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
 }
 
 .grid-cols-1 {
@@ -828,6 +858,10 @@ video {
 
 .divide-white\/10 > :not([hidden]) ~ :not([hidden]) {
   border-color: rgb(255 255 255 / 0.1);
+}
+
+.self-start {
+  align-self: flex-start;
 }
 
 .overflow-auto {
@@ -893,6 +927,10 @@ video {
   background-color: rgb(2 6 23 / var(--tw-bg-opacity, 1));
 }
 
+.bg-slate-950\/20 {
+  background-color: rgb(2 6 23 / 0.2);
+}
+
 .bg-slate-950\/30 {
   background-color: rgb(2 6 23 / 0.3);
 }
@@ -901,17 +939,13 @@ video {
   background-color: rgb(2 6 23 / 0.4);
 }
 
-.bg-slate-950\/50 {
-  background-color: rgb(2 6 23 / 0.5);
+.bg-slate-950\/60 {
+  background-color: rgb(2 6 23 / 0.6);
 }
 
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
-}
-
-.bg-white\/0 {
-  background-color: rgb(255 255 255 / 0);
 }
 
 .bg-white\/10 {
@@ -974,10 +1008,6 @@ video {
   --tw-gradient-to: transparent var(--tw-gradient-to-position);
 }
 
-.p-4 {
-  padding: 1rem;
-}
-
 .p-5 {
   padding: 1.25rem;
 }
@@ -1009,6 +1039,11 @@ video {
 .px-5 {
   padding-left: 1.25rem;
   padding-right: 1.25rem;
+}
+
+.px-6 {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
 }
 
 .py-0\.5 {
@@ -1047,6 +1082,14 @@ video {
 
 .text-left {
   text-align: left;
+}
+
+.\!text-center {
+  text-align: center !important;
+}
+
+.text-center {
+  text-align: center;
 }
 
 .font-mono {
@@ -1102,6 +1145,10 @@ video {
   letter-spacing: -0.025em;
 }
 
+.tracking-wide {
+  letter-spacing: 0.025em;
+}
+
 .text-red-200 {
   --tw-text-opacity: 1;
   color: rgb(254 202 202 / var(--tw-text-opacity, 1));
@@ -1146,6 +1193,10 @@ video {
   color: rgb(15 23 42 / var(--tw-text-opacity, 1));
 }
 
+.text-transparent {
+  color: transparent;
+}
+
 .text-white {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity, 1));
@@ -1185,12 +1236,6 @@ video {
   outline-offset: 2px;
 }
 
-.ring-0 {
-  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(0px + var(--tw-ring-offset-width)) var(--tw-ring-color);
-  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
-}
-
 .ring-1 {
   --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
   --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);
@@ -1203,6 +1248,10 @@ video {
 
 .ring-white\/15 {
   --tw-ring-color: rgb(255 255 255 / 0.15);
+}
+
+.ring-white\/5 {
+  --tw-ring-color: rgb(255 255 255 / 0.05);
 }
 
 .blur-2xl {
@@ -1249,6 +1298,10 @@ video {
   background-color: rgb(255 255 255 / 0.1);
 }
 
+.hover\:bg-white\/5:hover {
+  background-color: rgb(255 255 255 / 0.05);
+}
+
 .hover\:text-slate-100:hover {
   --tw-text-opacity: 1;
   color: rgb(241 245 249 / var(--tw-text-opacity, 1));
@@ -1256,6 +1309,10 @@ video {
 
 .focus\:border-white\/20:focus {
   border-color: rgb(255 255 255 / 0.2);
+}
+
+.focus\:ring-white\/25:focus {
+  --tw-ring-color: rgb(255 255 255 / 0.25);
 }
 
 .active\:translate-y-\[1px\]:active {
@@ -1308,6 +1365,10 @@ video {
     justify-content: space-between;
   }
 
+  .sm\:self-auto {
+    align-self: auto;
+  }
+
   .sm\:p-10 {
     padding: 2.5rem;
   }
@@ -1352,8 +1413,8 @@ video {
 }
 
 @media (min-width: 1024px) {
-  .lg\:col-span-2 {
-    grid-column: span 2 / span 2;
+  .lg\:w-80 {
+    width: 20rem;
   }
 
   .lg\:grid-cols-3 {
@@ -1366,6 +1427,10 @@ video {
 
   .lg\:items-end {
     align-items: flex-end;
+  }
+
+  .lg\:items-stretch {
+    align-items: stretch;
   }
 
   .lg\:justify-between {
