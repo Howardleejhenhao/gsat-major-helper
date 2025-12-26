@@ -27,7 +27,7 @@ def home(request):
         },
         {
             "title": "同年度校系最低錄取分數比較",
-            "desc": "列出同一 category_id 的校系，並比較同年度最低錄取分數。",
+            "desc": "列出同一學群學類的校系，並比較同年度最低錄取分數。",
             "meta": "同類校系比較",
             "badge": "校系",
             "href": "/features/category-compare/",
