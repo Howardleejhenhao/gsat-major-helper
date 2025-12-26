@@ -57,7 +57,7 @@ def home(request):
     return render(request, "pages/home.html", {"tags": tags, "features": features})
 
 def score_conversion(request):
-    subjects = ["國文", "英文", "數A", "數B", "社會", "自然"]
+    subjects = ["國文", "英文", "數學A", "數學B", "社會", "自然"]
 
     subject = request.GET.get("subject", "國文")
     score_raw = request.GET.get("score", "").strip()
@@ -75,8 +75,9 @@ def score_conversion(request):
                 sql = """
                     WITH input AS (
                     SELECT
+
                         %s::varchar AS sub_name,
-                        %s::int     AS lvl
+                        %s::int            AS lvl
                     )
                     SELECT
                     sp.exam_year AS year,
@@ -89,15 +90,15 @@ def score_conversion(request):
                         ELSE '流標'
                     END AS standard,
                     sp.percentile AS percentile,
-                    sp.min_score_range AS range_low,
-                    sp.max_score_range AS range_high
+                    sp.min_score AS range_low,
+                    sp.max_score AS range_high
                     FROM input
-                    JOIN subject sub
+                    JOIN Subject sub
                     ON sub.subject_name = input.sub_name
-                    JOIN subjectperformance sp
+                    JOIN SubjectPerformance sp
                     ON sp.subject_id = sub.subject_id
                     AND sp.level = input.lvl
-                    JOIN standardlevel sl
+                    JOIN StandardLevel sl
                     ON sl.exam_year = sp.exam_year
                     AND sl.subject_id = sub.subject_id
                     ORDER BY sp.exam_year;
