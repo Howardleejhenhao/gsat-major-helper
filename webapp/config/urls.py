@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from pages.views import home, score_conversion, standards_by_subject, category_compare
+from pages.views import home, score_conversion, standards_by_subject, category_compare, requirements
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -24,4 +24,5 @@ urlpatterns = [
     path("features/score-conversion/", score_conversion, name="score_conversion"),
     path("features/standards/", standards_by_subject, name="standards_by_subject"),
     path("features/category-compare/", category_compare, name="category_compare"),
+    path("features/requirements/", requirements, name="requirements"),
 ]
