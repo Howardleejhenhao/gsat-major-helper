@@ -16,12 +16,22 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+
 from pages.views import home, score_conversion, standards_by_subject, category_compare
+from pages.views.category_compare import toggle_favorite  # ⭐ 只新增這行
+from pages.views.favorites import favorites
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
     path("", home, name="home"),
     path("features/score-conversion/", score_conversion, name="score_conversion"),
     path("features/standards/", standards_by_subject, name="standards_by_subject"),
     path("features/category-compare/", category_compare, name="category_compare"),
+
+    # ⭐ 收藏切換 API（只新增這段）
+    path("api/favorite/toggle/", toggle_favorite, name="toggle_favorite"),
+    path("features/favorites/", favorites, name="favorites"),
+
 ]
+

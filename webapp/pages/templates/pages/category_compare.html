@@ -118,6 +118,8 @@
                   <th class="px-4 py-3 text-left text-xs font-semibold text-slate-200">科系</th>
                   <th class="px-4 py-3 text-left text-xs font-semibold text-slate-200">篩選最低級分</th>
                   <th class="px-4 py-3 text-left text-xs font-semibold text-slate-200">超篩有無</th>
+                  <!-- ★ 新增收藏欄位 -->
+                  <th class="px-4 py-3 text-left text-xs font-semibold text-slate-200">收藏</th>
                 </tr>
               </thead>
 
@@ -125,13 +127,20 @@
                 {% if results %}
                   {% for r in results %}
                     <tr class="hover:bg-white/5">
-                      <td class="px-4 py-3 text-sm text-slate-100">{{ r.univ_name }}</td>
-                      <td class="px-4 py-3 text-sm text-slate-100">{{ r.dept_name }}</td>
+                      <td class="px-4 py-3 text-sm text-slate-100">
+                        {{ r.univ_name }}
+                      </td>
+
+                      <td class="px-4 py-3 text-sm text-slate-100">
+                        {{ r.dept_name }}
+                      </td>
+
                       <td class="px-4 py-3 text-sm text-slate-100">
                         <span class="inline-flex rounded-full bg-white/5 px-2 py-1 text-xs text-slate-100 ring-1 ring-white/10">
                           {{ r.lowest_total }}
                         </span>
                       </td>
+
                       <td class="px-4 py-3 text-sm">
                         {% if r.has_extra_screen %}
                           <span class="inline-flex items-center gap-2 rounded-full bg-emerald-400/10 px-2 py-1 text-xs font-semibold text-emerald-200 ring-1 ring-emerald-400/20">
@@ -143,11 +152,27 @@
                           </span>
                         {% endif %}
                       </td>
+
+                      <!-- ★ 收藏星星 -->
+                      <td class="px-4 py-3 text-sm">
+                        <button
+                          type="button"
+                          class="favorite-btn text-xl transition hover:scale-110"
+                          data-dept-id="{{ r.dept_id }}"
+                          title="加入 / 取消收藏"
+                        >
+                          {% if r.dept_id in favorite_depts %}
+                            <span class="text-yellow-400">★</span>
+                          {% else %}
+                            <span class="text-slate-400">☆</span>
+                          {% endif %}
+                        </button>
+                      </td>
                     </tr>
                   {% endfor %}
                 {% else %}
                   <tr>
-                    <td colspan="4" class="px-4 py-6 text-sm text-slate-300/80">
+                    <td colspan="5" class="px-4 py-6 text-sm text-slate-300/80">
                       沒有查到資料。你之後把 SQL 查到的結果丟進 results 就會顯示。
                     </td>
                   </tr>
@@ -162,4 +187,39 @@
   </section>
 
 </div>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".favorite-btn").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const deptId = btn.dataset.deptId;
+
+      try {
+        const resp = await fetch("/api/favorite/toggle/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: `dept_id=${deptId}`,
+        });
+
+        if (!resp.ok) {
+          console.error("API failed", resp.status);
+          return;
+        }
+
+        const data = await resp.json();
+
+        // ★ 這裡是「變色關鍵」
+        btn.innerHTML = data.favorited
+          ? '<span class="text-yellow-400">★</span>'
+          : '<span class="text-slate-400">☆</span>';
+
+      } catch (err) {
+        console.error("fetch error", err);
+      }
+    });
+  });
+});
+</script>
+
 {% endblock %}
