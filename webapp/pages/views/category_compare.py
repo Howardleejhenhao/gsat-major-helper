@@ -39,11 +39,15 @@ def category_compare(request):
 
     get_results_sql = """
         SELECT 
-            u.univ_name,
-            d.dept_name,
-            d.dept_id,            -- ★ 一定要有
-            ar.lowest_total,
-            ar.has_extra_screen
+            u.univ_name, --學校名稱
+            d.dept_name, --科系名稱
+            d.dept_id,
+            STRING_AGG(
+                CONCAT(s.subject_name, '=', cd.required_score), 
+                ', ' 
+                ORDER BY sc.combo_order ASC
+            ), --篩選標準詳情
+            ar.has_extra_screen --超篩有無
         FROM 
             AdmissionRecord ar
         JOIN 
@@ -52,13 +56,20 @@ def category_compare(request):
             University u ON d.univ_id = u.univ_id
         JOIN 
             Category c ON d.category_id = c.category_id
+        JOIN 
+            SubjectCombination sc ON ar.record_id = sc.record_id
+        JOIN 
+            CombinationDetail cd ON sc.combo_id = cd.combo_id
+        JOIN 
+            Subject s ON cd.subject_id = s.subject_id
         WHERE 
             c.category_name = %s
             AND ar.exam_year = '114'
+        GROUP BY 
+            u.univ_id, d.dept_id, u.univ_name, d.dept_name, ar.lowest_total, ar.has_extra_screen
         ORDER BY 
             u.univ_id ASC;
-    """
-
+    """.strip()
     results = []
     if selected_category:
         with connection.cursor() as cursor:
@@ -69,7 +80,7 @@ def category_compare(request):
             {
                 "univ_name": r[0],
                 "dept_name": r[1],
-                "dept_id": r[2],          # ★
+                "dept_id": r[2],
                 "lowest_total": r[3],
                 "has_extra_screen": r[4],
             }
