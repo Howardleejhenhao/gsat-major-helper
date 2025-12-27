@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="pt-6 sm:pt-10 max-w-6xl mx-auto px-6">
+  <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+    <div>
+      <a
+        href="/"
+        class="text-sm text-slate-300/80 hover:text-slate-100 transition"
+      >
+        ← 回首頁
+      </a>
+
+      <h1 class="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl text-white">
+        ⭐ 我的最愛校系
+      </h1>
+
+      <p class="mt-2 text-sm text-slate-300/85">
+        收藏你有興趣的校系，方便之後快速比較與回顧錄取標準。
+        點擊星星即可取消收藏。
+      </p>
+    </div>
+  </div>
+</section>
+
+<div class="max-w-6xl mx-auto px-6 py-10">
+
+  <!-- 標題 -->
+  <h1 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+    ⭐ 我的最愛校系
+  </h1>
+
+  <!-- 表格卡片 -->
+  <div class="rounded-xl overflow-hidden border border-white/10 bg-white/5 backdrop-blur">
+
+    <table class="w-full text-sm text-slate-200">
+      
+      <!-- 表頭 -->
+      <thead class="bg-white/10 text-slate-100">
+        <tr>
+          <th class="px-4 py-3 text-left">學校</th>
+          <th class="px-4 py-3 text-left">科系</th>
+          <th class="px-4 py-3 text-left">學群</th>
+          <th class="px-4 py-3 text-left">學類</th>
+          <th class="px-4 py-3 text-left">排序</th>
+          <th class="px-4 py-3 text-left">收藏</th>
+        </tr>
+      </thead>
+
+      <!-- 表身 -->
+      <tbody class="divide-y divide-white/10 bg-slate-950/40">
+        {% for f in favorites %}
+        <tr class="hover:bg-white/5 transition favorite-row">
+          <td class="px-4 py-3">{{ f.univ_name }}</td>
+          <td class="px-4 py-3">{{ f.dept_name }}</td>
+          <td class="px-4 py-3">{{ f.academic_cluster }}</td>
+          <td class="px-4 py-3">{{ f.category_name }}</td>
+
+          <td class="px-4 py-3">
+            <div class="flex items-center gap-2">
+              <button
+                type="button"
+                class="move-btn rounded-lg bg-white/5 px-2 py-1 text-slate-200 ring-1 ring-white/10 hover:bg-white/10 active:translate-y-[1px]"
+                data-dir="up"
+                data-dept-id="{{ f.dept_id }}"
+                title="上移"
+              >↑</button>
+
+              <button
+                type="button"
+                class="move-btn rounded-lg bg-white/5 px-2 py-1 text-slate-200 ring-1 ring-white/10 hover:bg-white/10 active:translate-y-[1px]"
+                data-dir="down"
+                data-dept-id="{{ f.dept_id }}"
+                title="下移"
+              >↓</button>
+            </div>
+          </td>
+
+          <!-- ⭐ 星星（點擊取消收藏） -->
+          <td class="px-4 py-3">
+            <button
+              type="button"
+              class="favorite-btn text-xl text-yellow-400 hover:scale-110 transition"
+              data-dept-id="{{ f.dept_id }}"
+              title="取消收藏"
+            >
+              ★
+            </button>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="5" class="px-4 py-10 text-center text-slate-400">
+            尚未收藏任何校系
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+
+    </table>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".favorite-btn").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const deptId = btn.dataset.deptId;
+      const row = btn.closest(".favorite-row");
+
+      const resp = await fetch("/api/favorite/toggle/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: `dept_id=${deptId}`,
+      });
+
+      if (!resp.ok) return;
+
+      const data = await resp.json();
+
+      // 如果取消收藏，淡出後移除
+      if (!data.favorited) {
+        row.classList.add("opacity-0");
+        setTimeout(() => row.remove(), 200);
+      }
+    });
+  });
+});
+document.querySelectorAll(".move-btn").forEach(btn => {
+  btn.addEventListener("click", async () => {
+    const deptId = btn.dataset.deptId;
+    const dir = btn.dataset.dir;
+
+    const resp = await fetch("/api/favorite/move/", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: `dept_id=${encodeURIComponent(deptId)}&direction=${encodeURIComponent(dir)}`
+    });
+
+    if (!resp.ok) return;
+
+    const data = await resp.json();
+    if (data.ok && data.moved) {
+      location.reload();
+    }
+  });
+});
+
+</script>
+{% endblock %}

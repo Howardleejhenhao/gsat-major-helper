@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block title %}級分轉換｜GSAT Helper{% endblock %}
+
+{% block content %}
+  <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+    <div class="pt-6 sm:pt-10">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <a href="/" class="text-sm text-slate-300/80 hover:text-slate-100">← 回首頁</a>
+          <h1 class="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">查詢歷年級分轉換</h1>
+          <p class="mt-2 text-sm text-slate-300/85">
+            輸入科目與級分，查看各年度對應的五標、百分比、原始成績區間。
+          </p>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <div class="mt-6 rounded-3xl border border-white/10 bg-white/5 p-5 sm:p-6 backdrop-blur">
+        <form method="get" class="grid grid-cols-1 gap-4 sm:grid-cols-12 sm:items-end">
+          <!-- Subject -->
+          <div class="sm:col-span-5">
+            <label class="block text-sm font-medium text-slate-200">科目</label>
+            <select name="subject"
+                    class="mt-2 w-full rounded-2xl border border-white/10 bg-slate-950/40 px-4 py-3 text-sm text-slate-100 outline-none transition focus:border-white/20">
+              {% for s in subjects %}
+                <option value="{{ s }}" {% if s == subject %}selected{% endif %}>{{ s }}</option>
+              {% endfor %}
+            </select>
+
+            <!-- 用透明文字當占位，讓兩欄底部對齊（因為級分那欄有提示文字） -->
+            <p class="mt-2 text-xs text-transparent select-none">選擇科目</p>
+          </div>
+
+          <!-- Score -->
+          <div class="sm:col-span-4">
+            <label class="block text-sm font-medium text-slate-200">級分</label>
+            <input name="score"
+                   inputmode="numeric"
+                   placeholder="例如 10"
+                   value="{{ score_raw }}"
+                   class="mt-2 w-full rounded-2xl border border-white/10 bg-slate-950/40 px-4 py-3 text-sm text-slate-100 placeholder:text-slate-400 outline-none transition focus:border-white/20" />
+            <p class="mt-2 text-xs text-slate-400/80">範圍：0～15</p>
+          </div>
+
+          <!-- Submit -->
+          <div class="sm:col-span-3">
+            <button type="submit"
+                    class="w-full rounded-2xl bg-white px-5 py-3 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-100 active:translate-y-[1px]">
+              查詢
+            </button>
+          </div>
+        </form>
+
+        {% if error %}
+          <div class="mt-4 rounded-2xl border border-red-400/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+            {{ error }}
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Result (full width) -->
+      <div class="mt-6 rounded-3xl border border-white/10 bg-white/5 p-5 sm:p-6 backdrop-blur">
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <h2 class="text-base font-semibold">查詢結果</h2>
+
+          {% if results %}
+            <div class="text-xs text-slate-300/80">
+              科目：<span class="text-slate-100">{{ subject }}</span> /
+              級分：<span class="text-slate-100">{{ score }}</span>
+            </div>
+          {% else %}
+            <div class="text-xs text-slate-400/70">請先輸入條件並查詢</div>
+          {% endif %}
+        </div>
+
+        {% if results %}
+          <div class="mt-4 overflow-hidden rounded-2xl border border-white/10">
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-white/10 text-sm">
+                <thead class="bg-slate-950/40">
+                  <tr class="text-left text-slate-200">
+                    <th class="px-4 py-3 font-medium">年度</th>
+                    <th class="px-4 py-3 font-medium">五標</th>
+                    <th class="px-4 py-3 font-medium">百分比</th>
+                    <th class="px-4 py-3 font-medium">原始成績區間</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-white/10">
+                  {% for r in results %}
+                    <tr class="text-slate-100/90">
+                      <td class="px-4 py-3 whitespace-nowrap">{{ r.year }}</td>
+                      <td class="px-4 py-3 whitespace-nowrap">
+                        <span class="inline-flex items-center rounded-full bg-white/5 px-2.5 py-1 text-xs ring-1 ring-white/10">
+                          {{ r.level }}
+                        </span>
+                      </td>
+                      <td class="px-4 py-3 whitespace-nowrap">{{ r.percent }}</td>
+                      <td class="px-4 py-3 whitespace-nowrap font-mono text-xs sm:text-sm">{{ r.range }}</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        {% else %}
+          <div class="mt-4 rounded-2xl border border-white/10 bg-slate-950/30 p-5 text-sm text-slate-300/85">
+            你可以先試輸入：<span class="font-mono">科目</span>、<span class="font-mono">級分</span> 然後按「查詢」。
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

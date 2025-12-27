@@ -1,0 +1,59 @@
+{% load static %}
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>{% block title %}GSAT Helper{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/tailwind.css' %}">
+  </head>
+
+  <body class="min-h-screen bg-slate-950 text-slate-100 antialiased">
+    <!-- Background decor -->
+    <div class="pointer-events-none fixed inset-0 overflow-hidden">
+      <div class="absolute -top-24 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-gradient-to-tr from-indigo-500/30 via-fuchsia-500/20 to-cyan-400/20 blur-3xl"></div>
+      <div class="absolute bottom-[-180px] right-[-120px] h-[520px] w-[520px] rounded-full bg-gradient-to-tr from-emerald-400/15 via-sky-400/10 to-purple-400/10 blur-3xl"></div>
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(148,163,184,0.12)_1px,transparent_0)] [background-size:22px_22px] opacity-25"></div>
+    </div>
+
+    <!-- Top nav -->
+    <header class="relative z-10">
+      <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between py-5">
+          <a href="/" class="group inline-flex items-center gap-3">
+            <div class="grid h-10 w-10 place-items-center rounded-2xl bg-white/10 ring-1 ring-white/15 backdrop-blur">
+              <!-- simple mark -->
+              <svg class="h-5 w-5 text-white/90" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M5 16.5V7.8c0-.6.4-1.1 1-1.2l10-1.8c.8-.1 1.5.5 1.5 1.3v10.1c0 .6-.4 1.1-1 1.2l-10 1.8c-.8.1-1.5-.5-1.5-1.3Z" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M8 9h8M8 12h8M8 15h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="leading-tight">
+              <div class="text-base font-semibold tracking-tight">GSAT Helper</div>
+              <div class="text-xs text-slate-300/80">歷年資料查詢與比較</div>
+            </div>
+          </a>
+
+          <div class="hidden sm:flex items-center gap-2">
+            <span class="rounded-full bg-white/5 px-3 py-1 text-xs text-slate-200 ring-1 ring-white/10">Django</span>
+            <span class="rounded-full bg-white/5 px-3 py-1 text-xs text-slate-200 ring-1 ring-white/10">PostgreSQL</span>
+            <span class="rounded-full bg-white/5 px-3 py-1 text-xs text-slate-200 ring-1 ring-white/10">Tailwind</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="relative z-10">
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer class="relative z-10 mt-14 border-t border-white/10">
+      <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-10 text-sm text-slate-300/80">
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <div>© {{ now|date:"Y" }} GSAT Helper</div>
+          <div class="text-xs text-slate-400/70">Made with Tailwind + Django</div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

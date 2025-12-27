@@ -1,4 +1,12 @@
-SELECT COUNT(*) AS orphan_admissionrecord_dept
-FROM admissionrecord ar
-LEFT JOIN department d ON d.dept_id = ar.dept_id
-WHERE d.dept_id IS NULL;
+SELECT
+    u.univ_name,
+    d.dept_name,
+    c.academic_cluster,
+    c.category_name
+FROM Favorite f
+JOIN Department d
+    ON f.dept_id = d.dept_id
+JOIN University u
+    ON d.univ_id = u.univ_id
+JOIN Category c
+    ON d.category_id = c.category_id;

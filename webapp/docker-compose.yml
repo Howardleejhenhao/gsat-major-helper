@@ -27,3 +27,29 @@ services:
         python manage.py runserver 0.0.0.0:8000
       "
     restart: "no"
+
+  tailwind:
+    image: node:20-alpine
+    container_name: tailwind_watch
+    working_dir: /app
+    volumes:
+      - ./:/app
+      - node_modules_cache:/app/node_modules
+    command:
+      - sh
+      - -lc
+      - |
+          set -eux
+          cd /app
+          mkdir -p ./static/src ./static/css
+          ls -la ./static/src ./tailwind.config.js ./package.json
+          npm install
+          npx tailwindcss -c ./tailwind.config.js -i ./static/src/input.css -o ./static/css/tailwind.css
+          while true; do
+            npx tailwindcss -c ./tailwind.config.js -i ./static/src/input.css -o ./static/css/tailwind.css --watch --poll || true
+            sleep 1
+          done
+    restart: "no"
+
+volumes:
+  node_modules_cache:

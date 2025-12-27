@@ -1,5 +1,5 @@
 create table University (
-	univ_id CHAR(20) primary key,
+	univ_id CHAR(3) primary key,
 	univ_name VARCHAR(100)
 );
 
@@ -40,15 +40,15 @@ create table SubjectPerformance (
 );
 
 create table Department (
-    dept_id CHAR(20) primary key,
-    univ_id CHAR(20) references University(univ_id),
+    dept_id CHAR(6) primary key,
+    univ_id CHAR(3) references University(univ_id),
     dept_name VARCHAR(100),
     category_id INT references Category(category_id)
 );
 
 create table AdmissionRecord (
     record_id INT primary key,
-    dept_id CHAR(20) references Department(dept_id),
+    dept_id CHAR(6) references Department(dept_id),
     exam_year CHAR(20) references ExamYear(exam_year),
     has_extra_screen BOOLEAN,
     lowest_total VARCHAR(50)
@@ -72,8 +72,15 @@ create table CombinationDetail (
 
 create table ExamRequirement (
     req_id INT primary key,
-    dept_id CHAR(20) references Department(dept_id),
+    dept_id CHAR(6) references Department(dept_id),
     exam_year CHAR(20) references ExamYear(exam_year),
     subject_id CHAR(20) references Subject(subject_id),
     required_level VARCHAR(10)
+);
+
+CREATE SEQUENCE favorite_sort_order_seq START 1;
+CREATE TABLE Favorite (
+    favorite_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    dept_id CHAR(6) REFERENCES Department(dept_id),
+    sort_order INT NOT NULL DEFAULT nextval('favorite_sort_order_seq')
 );

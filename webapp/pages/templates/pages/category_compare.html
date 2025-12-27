@@ -1,0 +1,225 @@
+{% extends "base.html" %}
+{% block title %}同年度校系最低錄取分數比較｜GSAT Helper{% endblock %}
+
+{% block content %}
+<div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+
+  <!-- Header -->
+  <section class="pt-6 sm:pt-10">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <a href="/" class="text-sm text-slate-300/80 hover:text-slate-100">← 回首頁</a>
+          <h1 class="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">查詢同一年度不同學校相似科系最低錄取分數</h1>
+          <p class="mt-2 text-sm text-slate-300/85">
+            依學群 → 學類篩選，列出 114 年各校系的篩選最低級分與超篩有無。
+          </p>
+        </div>
+    </div>
+  </section>
+
+  <!-- Form Card (like your screenshot) -->
+  <section class="mt-6">
+    <div class="rounded-3xl border border-white/10 bg-white/5 p-5 sm:p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.03)] backdrop-blur">
+
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 class="text-base font-semibold tracking-tight">查詢條件</h2>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button type="button"
+                  class="rounded-2xl bg-white/5 px-4 py-2 text-xs font-semibold text-white ring-1 ring-white/10 transition hover:bg-white/10">
+            年分比較
+          </button>
+          <button type="button"
+                  class="rounded-2xl bg-white/5 px-4 py-2 text-xs font-semibold text-white ring-1 ring-white/10 transition hover:bg-white/10">
+            表格輸出
+          </button>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <form method="get" class="mt-5 grid grid-cols-1 gap-4 lg:grid-cols-12">
+        <!-- Academic Cluster -->
+        <div class="lg:col-span-5">
+          <label for="cluster" class="block text-sm font-semibold text-slate-200">學群</label>
+          <div class="mt-2">
+            <select id="cluster" name="cluster"
+                    onchange="document.getElementById('category').selectedIndex = 0; this.form.submit();"
+                    class="w-full rounded-2xl bg-slate-950/30 px-4 py-3 text-sm text-slate-100 ring-1 ring-white/10 outline-none transition focus:ring-2 focus:ring-white/20">
+            <option value="">請選擇學群</option>
+            {% for c in clusters %}
+                <option value="{{ c }}" {% if selected_cluster == c %}selected{% endif %}>
+                {{ c }}
+                </option>
+            {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <!-- Category Name -->
+        <div class="lg:col-span-5">
+          <label for="category" class="block text-sm font-semibold text-slate-200">學類</label>
+          <div class="mt-2">
+            <select id="category" name="category"
+                    class="w-full rounded-2xl bg-slate-950/30 px-4 py-3 text-sm text-slate-100 ring-1 ring-white/10 outline-none transition focus:ring-2 focus:ring-white/20"
+                    {% if not selected_cluster %}disabled{% endif %}>
+              <option value="">
+                {% if not selected_cluster %}
+                  請先選學群
+                {% else %}
+                  請選擇學類
+                {% endif %}
+              </option>
+
+              {% if categories %}
+                {% for cat in categories %}
+                  <option value="{{ cat }}" {% if selected_category == cat %}selected{% endif %}>
+                    {{ cat }}
+                  </option>
+                {% endfor %}
+              {% endif %}
+            </select>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="lg:col-span-2 flex items-end">
+          <button type="submit"
+                  class="w-full rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-100 active:translate-y-[1px]">
+            查詢
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- Results Card -->
+  <section class="mt-6">
+    <div class="rounded-3xl border border-white/10 bg-white/5 p-5 sm:p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.03)] backdrop-blur">
+      <div class="flex items-center justify-between">
+        <h2 class="text-base font-semibold tracking-tight">查詢結果</h2>
+        <div class="text-xs text-slate-400/80">
+          {% if selected_category %}已套用篩選：{{ selected_category }}{% else %}請先選擇條件並查詢{% endif %}
+        </div>
+      </div>
+
+      {% if not selected_category %}
+        <div class="mt-4 rounded-2xl bg-slate-950/30 p-4 text-sm text-slate-300/80 ring-1 ring-white/10">
+          你可以先選擇「學群」與「學類」，然後按下「查詢」。
+        </div>
+      {% else %}
+        <div class="mt-4 overflow-hidden rounded-2xl border border-white/10">
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-white/10">
+              <thead class="bg-white/5">
+                <tr>
+                  <th class="px-4 py-3 text-left text-xs font-semibold text-slate-200">學校</th>
+                  <th class="px-4 py-3 text-left text-xs font-semibold text-slate-200">科系</th>
+                  <th class="px-4 py-3 text-left text-xs font-semibold text-slate-200">篩選最低級分</th>
+                  <th class="px-4 py-3 text-left text-xs font-semibold text-slate-200">超篩有無</th>
+                  <!-- ★ 新增收藏欄位 -->
+                  <th class="px-4 py-3 text-left text-xs font-semibold text-slate-200">收藏</th>
+                </tr>
+              </thead>
+
+              <tbody class="divide-y divide-white/10 bg-slate-950/20">
+                {% if results %}
+                  {% for r in results %}
+                    <tr class="hover:bg-white/5">
+                      <td class="px-4 py-3 text-sm text-slate-100">
+                        {{ r.univ_name }}
+                      </td>
+
+                      <td class="px-4 py-3 text-sm text-slate-100">
+                        {{ r.dept_name }}
+                      </td>
+
+                      <td class="px-4 py-3 text-sm text-slate-100">
+                        <span class="inline-flex rounded-full bg-white/5 px-2 py-1 text-xs text-slate-100 ring-1 ring-white/10">
+                          {{ r.lowest_total }}
+                        </span>
+                      </td>
+
+                      <td class="px-4 py-3 text-sm">
+                        {% if r.has_extra_screen %}
+                          <span class="inline-flex items-center gap-2 rounded-full bg-emerald-400/10 px-2 py-1 text-xs font-semibold text-emerald-200 ring-1 ring-emerald-400/20">
+                            有超篩
+                          </span>
+                        {% else %}
+                          <span class="inline-flex items-center gap-2 rounded-full bg-slate-400/10 px-2 py-1 text-xs font-semibold text-slate-200 ring-1 ring-white/10">
+                            無超篩
+                          </span>
+                        {% endif %}
+                      </td>
+
+                      <!-- ★ 收藏星星 -->
+                      <td class="px-4 py-3 text-sm">
+                        <button
+                          type="button"
+                          class="favorite-btn text-xl transition hover:scale-110"
+                          data-dept-id="{{ r.dept_id }}"
+                          title="加入 / 取消收藏"
+                        >
+                          {% if r.dept_id in favorite_depts %}
+                            <span class="text-yellow-400">★</span>
+                          {% else %}
+                            <span class="text-slate-400">☆</span>
+                          {% endif %}
+                        </button>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                {% else %}
+                  <tr>
+                    <td colspan="5" class="px-4 py-6 text-sm text-slate-300/80">
+                      沒有查到資料。你之後把 SQL 查到的結果丟進 results 就會顯示。
+                    </td>
+                  </tr>
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      {% endif %}
+    </div>
+  </section>
+
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".favorite-btn").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const deptId = btn.dataset.deptId;
+
+      try {
+        const resp = await fetch("/api/favorite/toggle/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: `dept_id=${deptId}`,
+        });
+
+        if (!resp.ok) {
+          console.error("API failed", resp.status);
+          return;
+        }
+
+        const data = await resp.json();
+
+        // ★ 這裡是「變色關鍵」
+        btn.innerHTML = data.favorited
+          ? '<span class="text-yellow-400">★</span>'
+          : '<span class="text-slate-400">☆</span>';
+
+      } catch (err) {
+        console.error("fetch error", err);
+      }
+    });
+  });
+});
+</script>
+
+{% endblock %}

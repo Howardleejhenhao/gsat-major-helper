@@ -1,0 +1,215 @@
+{% extends "base.html" %}
+{% block title %}同校同系歷年檢定標準｜GSAT Helper{% endblock %}
+
+{% block content %}
+<div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+
+  <!-- Header -->
+  <section class="pt-6 sm:pt-10">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <a href="/" class="text-sm text-slate-300/80 hover:text-slate-100">← 回首頁</a>
+        <h1 class="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">查詢同校同系歷年檢定標準</h1>
+        <p class="mt-2 text-sm text-slate-300/85">
+          先選擇「學校」→ 再選擇「科系」→ 查詢後顯示：114 年最低錄取標準＋歷年檢定標準列表。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Form Card -->
+  <section class="mt-6">
+    <div class="rounded-3xl border border-white/10 bg-white/5 p-5 sm:p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.03)] backdrop-blur">
+
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 class="text-base font-semibold tracking-tight">查詢條件</h2>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button type="button"
+                  class="rounded-2xl bg-white/5 px-4 py-2 text-xs font-semibold text-white ring-1 ring-white/10 transition hover:bg-white/10">
+            匯出（預留）
+          </button>
+        </div>
+      </div>
+
+      <form method="get" class="mt-5 grid grid-cols-1 gap-4 lg:grid-cols-12">
+        <!-- University -->
+        <div class="lg:col-span-5">
+          <label for="univ" class="block text-sm font-semibold text-slate-200">學校</label>
+          <div class="mt-2">
+            <select id="univ" name="univ"
+                    onchange="document.getElementById('dept').selectedIndex = 0; this.form.submit();"
+                    class="w-full rounded-2xl bg-slate-950/30 px-4 py-3 text-sm text-slate-100 ring-1 ring-white/10 outline-none transition focus:ring-2 focus:ring-white/20">
+              <option value="">請選擇學校</option>
+              {% for u in universities %}
+                <option value="{{ u.univ_id }}" {% if selected_univ_id == u.univ_id|stringformat:"s" %}selected{% endif %}>
+                  {{ u.univ_name }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <!-- Department -->
+        <div class="lg:col-span-5">
+          <label for="dept" class="block text-sm font-semibold text-slate-200">科系</label>
+          <div class="mt-2">
+            <select id="dept" name="dept"
+                    class="w-full rounded-2xl bg-slate-950/30 px-4 py-3 text-sm text-slate-100 ring-1 ring-white/10 outline-none transition focus:ring-2 focus:ring-white/20"
+                    {% if not selected_univ_id %}disabled{% endif %}>
+              <option value="">
+                {% if not selected_univ_id %}
+                  請先選學校
+                {% else %}
+                  請選擇科系
+                {% endif %}
+              </option>
+
+              {% if departments %}
+                {% for d in departments %}
+                  <option value="{{ d.dept_id }}" {% if selected_dept_id == d.dept_id|stringformat:"s" %}selected{% endif %}>
+                    {{ d.dept_name }}
+                  </option>
+                {% endfor %}
+              {% endif %}
+            </select>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="lg:col-span-2 flex items-end">
+          <button type="submit" name="q" value="1"
+                  class="w-full rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-slate-100 active:translate-y-[1px]">
+            查詢
+          </button>
+        </div>
+      </form>
+
+      {% if error %}
+        <div class="mt-4 rounded-2xl bg-rose-500/10 p-4 text-sm text-rose-200 ring-1 ring-rose-400/20">
+          {{ error }}
+        </div>
+      {% endif %}
+
+    </div>
+  </section>
+
+  <!-- Results -->
+  <section class="mt-6 space-y-4">
+
+    <!-- Box 1: 114 summary -->
+    <div class="rounded-3xl border border-white/10 bg-white/5 p-5 sm:p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.03)] backdrop-blur">
+      <div class="flex items-center justify-between">
+        <h2 class="text-base font-semibold tracking-tight">114 年最低錄取標準</h2>
+        <div class="text-xs text-slate-400/80">
+          {% if did_query %}已查詢{% else %}請先選擇條件並查詢{% endif %}
+        </div>
+      </div>
+
+      {% if not did_query %}
+        <div class="mt-4 rounded-2xl bg-slate-950/30 p-4 text-sm text-slate-300/80 ring-1 ring-white/10">
+          先選「學校」與「科系」，再按下「查詢」。
+        </div>
+      {% else %}
+        {% if summary_114 %}
+          <div class="mt-4 overflow-hidden rounded-2xl border border-white/10">
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-white/10">
+                <thead class="bg-white/5">
+                  <tr>
+                    <th class="px-4 py-3 text-left text-xs font-semibold text-slate-200">學校</th>
+                    <th class="px-4 py-3 text-left text-xs font-semibold text-slate-200">科系</th>
+                    <th class="px-4 py-3 text-left text-xs font-semibold text-slate-200">最低錄取標準</th>
+                    <th class="px-4 py-3 text-left text-xs font-semibold text-slate-200">超篩有無</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-white/10 bg-slate-950/20">
+                  <tr class="hover:bg-white/5">
+                    <td class="px-4 py-3 text-sm text-slate-100">{{ summary_114.univ_name }}</td>
+                    <td class="px-4 py-3 text-sm text-slate-100">{{ summary_114.dept_name }}</td>
+                    <td class="px-4 py-3 text-sm text-slate-100">
+                      <span class="inline-flex rounded-full bg-white/5 px-2 py-1 text-xs text-slate-100 ring-1 ring-white/10">
+                        {{ summary_114.lowest_standard }}
+                      </span>
+                    </td>
+                    <td class="px-4 py-3 text-sm">
+                      {% if summary_114.has_extra_screen %}
+                        <span class="inline-flex items-center gap-2 rounded-full bg-emerald-400/10 px-2 py-1 text-xs font-semibold text-emerald-200 ring-1 ring-emerald-400/20">
+                          有超篩
+                        </span>
+                      {% else %}
+                        <span class="inline-flex items-center gap-2 rounded-full bg-slate-400/10 px-2 py-1 text-xs font-semibold text-slate-200 ring-1 ring-white/10">
+                          無超篩
+                        </span>
+                      {% endif %}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        {% endif %}
+      {% endif %}
+    </div>
+
+    <!-- Box 2: Yearly requirements -->
+    <div class="mt-4 rounded-3xl border border-white/10 bg-white/5 p-5 sm:p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.03)] backdrop-blur">
+      <div class="flex items-center justify-between">
+        <h2 class="text-base font-semibold tracking-tight">歷年檢定標準</h2>
+        <div class="text-xs text-slate-400/80">
+          {% if did_query %}依選擇顯示資料{% else %}請先查詢{% endif %}
+        </div>
+      </div>
+
+      {% if not did_query %}
+        <div class="mt-4 rounded-2xl bg-slate-950/30 p-4 text-sm text-slate-300/80 ring-1 ring-white/10">
+          查詢後會顯示年度與各科檢定門檻（國文、英文、數A、數B、社會、自然）。
+        </div>
+      {% else %}
+        {% if requirement_rows %}
+          <div class="mt-4 overflow-hidden rounded-2xl border border-white/10">
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-white/10">
+                <thead class="bg-white/5">
+                  <tr>
+                    <th class="px-4 py-3 text-left text-xs font-semibold text-slate-200">年度</th>
+                    <th class="px-4 py-3 text-left text-xs font-semibold text-slate-200">學校</th>
+                    <th class="px-4 py-3 text-left text-xs font-semibold text-slate-200">科系</th>
+                    <th class="px-4 py-3 text-left text-xs font-semibold text-slate-200">國文</th>
+                    <th class="px-4 py-3 text-left text-xs font-semibold text-slate-200">英文</th>
+                    <th class="px-4 py-3 text-left text-xs font-semibold text-slate-200">數學A</th>
+                    <th class="px-4 py-3 text-left text-xs font-semibold text-slate-200">數學B</th>
+                    <th class="px-4 py-3 text-left text-xs font-semibold text-slate-200">社會</th>
+                    <th class="px-4 py-3 text-left text-xs font-semibold text-slate-200">自然</th>
+                  </tr>
+                </thead>
+
+                <tbody class="divide-y divide-white/10 bg-slate-950/20">
+                  {% for r in requirement_rows %}
+                    <tr class="hover:bg-white/5">
+                      <td class="px-4 py-3 text-sm text-slate-100">{{ r.exam_year }}</td>
+                      <td class="px-4 py-3 text-sm text-slate-100">{{ r.univ_name }}</td>
+                      <td class="px-4 py-3 text-sm text-slate-100">{{ r.dept_name }}</td>
+                      <td class="px-4 py-3 text-sm text-slate-100">{{ r.ch }}</td>
+                      <td class="px-4 py-3 text-sm text-slate-100">{{ r.en }}</td>
+                      <td class="px-4 py-3 text-sm text-slate-100">{{ r.ma }}</td>
+                      <td class="px-4 py-3 text-sm text-slate-100">{{ r.mb }}</td>
+                      <td class="px-4 py-3 text-sm text-slate-100">{{ r.soc }}</td>
+                      <td class="px-4 py-3 text-sm text-slate-100">{{ r.sci }}</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        {% else %}
+        {% endif %}
+      {% endif %}
+    </div>
+
+  </section>
+
+</div>
+{% endblock %}
