@@ -78,7 +78,9 @@ create table ExamRequirement (
     required_level VARCHAR(10)
 );
 
+CREATE SEQUENCE favorite_sort_order_seq START 1;
 CREATE TABLE Favorite (
     favorite_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    dept_id CHAR(6) REFERENCES Department(dept_id)
+    dept_id CHAR(6) REFERENCES Department(dept_id),
+    sort_order INT NOT NULL DEFAULT nextval('favorite_sort_order_seq')
 );
