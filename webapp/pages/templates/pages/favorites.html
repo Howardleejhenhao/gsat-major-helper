@@ -43,6 +43,7 @@
           <th class="px-4 py-3 text-left">科系</th>
           <th class="px-4 py-3 text-left">學群</th>
           <th class="px-4 py-3 text-left">學類</th>
+          <th class="px-4 py-3 text-left">排序</th>
           <th class="px-4 py-3 text-left">收藏</th>
         </tr>
       </thead>
@@ -55,6 +56,26 @@
           <td class="px-4 py-3">{{ f.dept_name }}</td>
           <td class="px-4 py-3">{{ f.academic_cluster }}</td>
           <td class="px-4 py-3">{{ f.category_name }}</td>
+
+          <td class="px-4 py-3">
+            <div class="flex items-center gap-2">
+              <button
+                type="button"
+                class="move-btn rounded-lg bg-white/5 px-2 py-1 text-slate-200 ring-1 ring-white/10 hover:bg-white/10 active:translate-y-[1px]"
+                data-dir="up"
+                data-dept-id="{{ f.dept_id }}"
+                title="上移"
+              >↑</button>
+
+              <button
+                type="button"
+                class="move-btn rounded-lg bg-white/5 px-2 py-1 text-slate-200 ring-1 ring-white/10 hover:bg-white/10 active:translate-y-[1px]"
+                data-dir="down"
+                data-dept-id="{{ f.dept_id }}"
+                title="下移"
+              >↓</button>
+            </div>
+          </td>
 
           <!-- ⭐ 星星（點擊取消收藏） -->
           <td class="px-4 py-3">
@@ -81,9 +102,6 @@
   </div>
 </div>
 
-<!-- =========================
-     收藏切換 JS
-========================= -->
 <script>
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".favorite-btn").forEach(btn => {
@@ -111,5 +129,25 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 });
+document.querySelectorAll(".move-btn").forEach(btn => {
+  btn.addEventListener("click", async () => {
+    const deptId = btn.dataset.deptId;
+    const dir = btn.dataset.dir;
+
+    const resp = await fetch("/api/favorite/move/", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: `dept_id=${encodeURIComponent(deptId)}&direction=${encodeURIComponent(dir)}`
+    });
+
+    if (!resp.ok) return;
+
+    const data = await resp.json();
+    if (data.ok && data.moved) {
+      location.reload();
+    }
+  });
+});
+
 </script>
 {% endblock %}

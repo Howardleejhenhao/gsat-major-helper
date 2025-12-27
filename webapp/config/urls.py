@@ -20,6 +20,7 @@ from django.urls import path
 from pages.views import home, score_conversion, standards_by_subject, category_compare, requirements
 from pages.views.category_compare import toggle_favorite
 from pages.views.favorites import favorites
+from pages.favorite_api import favorite_move
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,6 +32,6 @@ urlpatterns = [
     path("features/requirements/", requirements, name="requirements"),
     path("api/favorite/toggle/", toggle_favorite, name="toggle_favorite"),
     path("features/favorites/", favorites, name="favorites"),
-
+    path("api/favorite/move/", favorite_move),
 ]
 

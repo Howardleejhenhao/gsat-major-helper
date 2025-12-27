@@ -109,9 +109,7 @@ def category_compare(request):
 
     return render(request, "pages/category_compare.html", context)
 
-# ===============================
-# 收藏切換 API（給 AJAX 用）
-# ===============================
+
 @csrf_exempt
 @require_POST
 def toggle_favorite(request):
