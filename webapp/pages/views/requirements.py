@@ -95,9 +95,48 @@ def requirements(request):
                     else:
                         summary_114 = None
 
-                    # TODO: 歷年檢定標準
-                    requirement_rows = []
+                    cur.execute("""
+                    WITH req AS (
+                    SELECT
+                        er.exam_year::text AS exam_year,
+                        u.univ_name,
+                        d.dept_name,
+                        s.subject_name,
+                        er.required_level
+                    FROM ExamRequirement er
+                    JOIN Department d ON d.dept_id = er.dept_id
+                    JOIN University u ON u.univ_id = d.univ_id
+                    JOIN Subject s ON s.subject_id = er.subject_id
+                    WHERE er.dept_id::text = %s
+                    )
+                    SELECT
+                    exam_year,
+                    univ_name,
+                    dept_name,
+                    COALESCE(MAX(CASE WHEN subject_name = '國文'   THEN required_level END), '--') AS ch,
+                    COALESCE(MAX(CASE WHEN subject_name = '英文'   THEN required_level END), '--') AS en,
+                    COALESCE(MAX(CASE WHEN subject_name = '數學A'  THEN required_level END), '--') AS ma,
+                    COALESCE(MAX(CASE WHEN subject_name = '數學B'  THEN required_level END), '--') AS mb,
+                    COALESCE(MAX(CASE WHEN subject_name = '社會'   THEN required_level END), '--') AS soc,
+                    COALESCE(MAX(CASE WHEN subject_name = '自然'   THEN required_level END), '--') AS sci
+                    FROM req
+                    GROUP BY exam_year, univ_name, dept_name
+                    ORDER BY exam_year DESC;
+                    """, [selected_dept_id])
 
+                    requirement_rows = []
+                    for r in cur.fetchall():
+                        requirement_rows.append({
+                            "exam_year": r[0],
+                            "univ_name": r[1],
+                            "dept_name": r[2],
+                            "ch": r[3],
+                            "en": r[4],
+                            "ma": r[5],
+                            "mb": r[6],
+                            "soc": r[7],
+                            "sci": r[8],
+                        })
     except Exception as e:
         error = f"查詢發生錯誤：{e}"
 
